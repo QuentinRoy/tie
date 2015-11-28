@@ -1,0 +1,16 @@
+{
+    "extends": "eslint:recommended",
+    "rules": {
+    	"no-underscore-dangle": 0
+    },
+    "env": {
+        "browser": 1,
+        "es6": 1
+    },
+    "ecmaFeatures": {
+        "modules": 1
+    },
+    "globals": {
+        "require": true
+    }
+}

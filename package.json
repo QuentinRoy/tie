@@ -1,0 +1,24 @@
+{
+  "name": "es-constraint",
+  "version": "0.1.0",
+  "description": "",
+  "main": "c.js",
+  "scripts": {
+    "test": "mocha --require babel-core/register",
+    "build": "./node_modules/.bin/webpack --config webpack.config.js"
+  },
+  "keywords": [
+    "constraint", "events"
+  ],
+  "author": "Quentin Roy <quentin@quentinroy.fr>",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.2.1",
+    "babel-loader": "^6.2.0",
+    "babel-preset-es2015": "^6.1.18",
+    "chai": "^3.4.1",
+    "events": "^1.1.0",
+    "mocha": "^2.3.4",
+    "webpack": "^1.12.9"
+  }
+}
