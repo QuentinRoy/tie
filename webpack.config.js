@@ -9,9 +9,9 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'c.js',
+    filename: 'tie.js',
     libraryTarget: 'umd',
-    library: 'c'
+    library: 'tie'
   },
   module: {
     loaders: [

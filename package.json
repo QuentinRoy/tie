@@ -1,8 +1,8 @@
 {
-  "name": "es-constraint",
+  "name": "tie",
   "version": "0.1.0",
   "description": "",
-  "main": "c.js",
+  "main": "dist/tie.js",
   "scripts": {
     "test": "mocha --require babel-core/register",
     "build": "./node_modules/.bin/webpack --config webpack.config.js"

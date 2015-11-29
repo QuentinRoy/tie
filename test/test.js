@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import c from "../lib";
+import tie from "../lib";
 
 describe("Basic Constraint", function() {
 	it("should calculate constraint values and update when dependencies' change", function(){
-		var x = c(1);
-		var y = c(() => x.get() + 1);
-		var z = c(() => y.get() * 2);
+		var x = tie(1);
+		var y = tie(() => x.get() + 1);
+		var z = tie(() => y.get() * 2);
 		expect(x.get()).be.equal(1);
 		expect(y.get()).be.equal(2);
 		expect(z.get()).be.equal(4);
@@ -17,13 +17,13 @@ describe("Basic Constraint", function() {
 	it("should remove dependencies that are not used anymore", function(){
 		let xUpdates = 0;
 		let condUpdates = 0;
-		const det = c(true);
-		const xSource = c('a');
-		const x = c(() => {
+		const det = tie(true);
+		const xSource = tie('a');
+		const x = tie(() => {
 			xUpdates++;
 			return xSource.get();
 		});
-		const cond = c(() => {
+		const cond = tie(() => {
 			condUpdates++;
 			if(det.get()){
 				return x.get();
@@ -55,9 +55,9 @@ describe("Basic Constraint", function() {
 });
 
 describe("Constraint set to constraint", function() {
-	var x = c(1);
-	var y = c(x);
-	var z = c(3);
+	var x = tie(1);
+	var y = tie(x);
+	var z = tie(3);
 	it("should be equal to the set constraint", function() {
 		expect(x.get()).be.equal(1);
 		expect(y.get()).be.equal(1);
@@ -73,7 +73,7 @@ describe("Constraint set to constraint", function() {
 
 describe("Constraint referring itself", function(){
 	it("should make use of previous value", function(){
-		var x = c(1);
+		var x = tie(1);
 		expect(x.get()).be.equal(1);
 		x.set(function() {
 			return x.get() + 1;
@@ -81,8 +81,4 @@ describe("Constraint referring itself", function(){
 		expect(x.get()).be.equal(2);
 		expect(x.get()).be.equal(2);
 	});
-})
-
-describe("Constraint update their deps on update", function(){
-
 })
