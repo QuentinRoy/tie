@@ -1,6 +1,6 @@
 //import { expect } from "chai";
 import test from "tape";
-import tie from "../dist/tie";
+import tie from "../lib";
 
 test("Constraint ties", (assert) => {
 	var x = tie(2);
@@ -73,7 +73,7 @@ test("Evaluations and dependency updates", (assert) => {
 		"A constraint is evaluated when get."
 	);
 	xSource.set("b");
-	assert.equal(cond.get(), "b", 
+	assert.equal(cond.get(), "b",
 		"Proper constraint value after source reset.");
 	assert.equal(xUpdates, 2,
 		"Source has been re-evaluated."
@@ -101,7 +101,7 @@ test("Evaluations and dependency updates", (assert) => {
 	assert.equal(condUpdates, 3,
 		"Constraint has not been re-evaluated after being requested."
 	);
-	det.set(true);	
+	det.set(true);
 	assert.equal(cond.get(), 'c',
 		"Constraint is now dependent of source again."
 	);
@@ -115,7 +115,7 @@ test("Evaluations and dependency updates", (assert) => {
 	assert.end();
 });
 
-test.skip("Avoid update when parent are invalidated but did not change", (assert) => {
+test("Avoid update when parent are invalidated but did not change", (assert) => {
 	let zn = 0;
 	let yn = 0;
 	const x = tie(0);
@@ -136,7 +136,7 @@ test.skip("Avoid update when parent are invalidated but did not change", (assert
 	assert.equal(yn, 2,
 		"Constraint's parent has been re-evaluated."
 	);
-	assert.equal(zn, 1, 
+	assert.equal(zn, 1,
 		"Constraint has not as its parent's value did not actually change."
 	);
 	x.set(3);
