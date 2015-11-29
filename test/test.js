@@ -115,6 +115,45 @@ test("Evaluations and dependency updates", (assert) => {
 	assert.end();
 });
 
+test.skip("Avoid update when parent are invalidated but did not change", (assert) => {
+	let zn = 0;
+	let yn = 0;
+	const x = tie(0);
+	const y = tie(() => {
+		yn++;
+		return x.get() == 3;
+	});
+	const z = tie(() => {
+		zn++;
+		return y.get() ? "ok": "not ok";
+	});
+	z.get();
+	x.set(2);
+	z.get();
+	assert.equal(y.get(), false,
+		"Parent's value has not changed."
+	)
+	assert.equal(yn, 2,
+		"Constraint's parent has been re-evaluated."
+	);
+	assert.equal(zn, 1, 
+		"Constraint has not as its parent's value did not actually change."
+	);
+	x.set(3);
+	assert.equal(y.get(), true,
+		"Value of constraint's parent has changed."
+	);
+	assert.equal(yn, 3,
+		"Constraint's parent has been re-evaluated."
+	);
+	const lastZn = zn;
+	z.get();
+	assert.equal(zn, lastZn + 1,
+		"Constraint is re-evaluated."
+	)
+	assert.end();
+});
+
 test("Self referring constraint", (assert) => {
 	const x = tie(() => x.get() || 0 + 1);
 	assert.equal(x.get(), 1,
