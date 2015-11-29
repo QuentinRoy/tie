@@ -5,7 +5,7 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: {
-    lib: [ path.resolve(__dirname, 'lib/cjs-index.js') ],
+    lib: [ path.resolve(__dirname, 'lib/index.js') ],
   },
   output: {
     path: path.join(__dirname, 'dist'),
