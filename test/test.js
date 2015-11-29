@@ -1,84 +1,130 @@
-import { expect } from "chai";
-import tie from "../lib";
+//import { expect } from "chai";
+import test from "tape";
+import tie from "../dist/tie";
 
-describe("Basic Constraint", function() {
-	it("should calculate constraint values and update when dependencies' change", function(){
-		var x = tie(1);
-		var y = tie(() => x.get() + 1);
-		var z = tie(() => y.get() * 2);
-		expect(x.get()).be.equal(1);
-		expect(y.get()).be.equal(2);
-		expect(z.get()).be.equal(4);
-		x.set(10);
-		expect(x.get()).be.equal(10);
-		expect(y.get()).be.equal(11);
-		expect(z.get()).be.equal(22);
-	});
-	it("should remove dependencies that are not used anymore", function(){
-		let xUpdates = 0;
-		let condUpdates = 0;
-		const det = tie(true);
-		const xSource = tie('a');
-		const x = tie(() => {
-			xUpdates++;
-			return xSource.get();
-		});
-		const cond = tie(() => {
-			condUpdates++;
-			if(det.get()){
-				return x.get();
-			} else {
-				return '';
-			}
-		});
-		expect(xUpdates).be.equal(0);
-		expect(cond.get()).be.equal('a');
-		expect(xUpdates).be.equal(1);
-		expect(condUpdates).be.equal(1);
-		xSource.set('b');
-		expect(cond.get()).be.equal('b');
-		expect(xUpdates).be.equal(2);
-		expect(condUpdates).be.equal(2);
-		det.set(false);
-		expect(cond.get()).be.equal('');
-		expect(xUpdates).be.equal(2);
-		expect(condUpdates).be.equal(3);
-		xSource.set('c');
-		expect(cond.get()).be.equal('');
-		expect(xUpdates).be.equal(2);
-		expect(condUpdates).be.equal(3);
-		det.set(true);	
-		expect(cond.get()).be.equal('c');
-		expect(xUpdates).be.equal(3);
-		expect(condUpdates).be.equal(4);		
-	});
+test("Constraint ties", (assert) => {
+	var x = tie(2);
+	var y = tie(() => 3);
+	var z = tie(() => x.get() * y.get());
+	assert.equal(x.get(), 2,
+		"A constraint is equal to set value.");
+	assert.equal(y.get(), 3,
+		"A constraint value can be set with a function.");
+	assert.equal(z.get(), 6,
+		"Constraint value can be calculated from other constraints.");
+	x.set(10);
+	assert.equal(x.get(), 10,
+		"Constraint can be reset.");
+	assert.equal(z.get(), 30,
+		"Dependent constraint are updated when depedencies' value change.");
+
+	assert.end();
 });
 
-describe("Constraint set to constraint", function() {
-	var x = tie(1);
-	var y = tie(x);
-	var z = tie(3);
-	it("should be equal to the set constraint", function() {
-		expect(x.get()).be.equal(1);
-		expect(y.get()).be.equal(1);
-		x.set(2);
-		expect(x.get()).be.equal(2);
-		expect(y.get()).be.equal(2);
-		y.set(z);
-		expect(x.get()).be.equal(2);
-		expect(y.get()).be.equal(3);
-		expect(z.get()).be.equal(3);
-	});
+test("Constraint set to constraint", (assert) => {
+	var x = tie('x');
+	var y = tie('y');
+	var z = tie(x);
+
+	assert.equal(z.get(), 'x',
+		"Constraint set to a constraint get its value."
+	)
+	z.set('z');
+	assert.equal(z.get(), 'z',
+		"It can be reset..."
+	);
+	assert.equal(x.get(), 'x',
+		"...without changing the set constraint value."
+	);
+	z.set(y);
+	assert.equal(z.get(), 'y',
+		"It can be reset to a new constraint and will take its value."
+	);
+
+	assert.end();
 });
 
-describe("Constraint referring itself", function(){
-	it("should make use of previous value", function(){
-		var x = tie(1);
-		expect(x.get()).be.equal(1);
-		x.set(function() {
-			return x.get() + 1;
-		});
-		expect(x.get()).be.equal(2);
-		expect(x.get()).be.equal(2);
+test("Evaluations and dependency updates", (assert) => {
+	let xUpdates = 0;
+	let condUpdates = 0;
+	const det = tie(true);
+	const xSource = tie('a');
+	const x = tie(() => {
+		xUpdates++;
+		return xSource.get();
 	});
-})
+	const cond = tie(() => {
+		condUpdates++;
+		if(det.get()){
+			return x.get();
+		} else {
+			return '';
+		}
+	});
+	assert.equal(xUpdates, 0,
+		"A constraint is not evaluated uncessary."
+	)
+	assert.equal(cond.get(), "a",
+		"Proper constraint value.");
+	assert.equal(xUpdates, 1,
+		"Dependencies are evaluated when a constraint is get."
+	);
+	assert.equal(condUpdates, 1,
+		"A constraint is evaluated when get."
+	);
+	xSource.set("b");
+	assert.equal(cond.get(), "b", 
+		"Proper constraint value after source reset.");
+	assert.equal(xUpdates, 2,
+		"Source has been re-evaluated."
+	);
+	assert.equal(condUpdates, 2,
+		"Constraint has been re-evaluated."
+	);
+	det.set(false);
+	assert.equal(cond.get(), "",
+		"Source isn't a dependency anymore."
+	);
+	assert.equal(xUpdates, 2,
+		"Source has not been re-evaluated."
+	);
+	assert.equal(condUpdates, 3,
+		"Constraint has been re-evaluated."
+	);
+	xSource.set('c');
+	assert.equal(cond.get(), '',
+		"Constraint does not change anymore when source is reset."
+	);
+	assert.equal(xUpdates, 2,
+		"Source has not been re-evaluated while constraint has been requested."
+	);
+	assert.equal(condUpdates, 3,
+		"Constraint has not been re-evaluated after being requested."
+	);
+	det.set(true);	
+	assert.equal(cond.get(), 'c',
+		"Constraint is now dependent of source again."
+	);
+	assert.equal(condUpdates, 4,
+		"It has been re-evaluated after bein requested."
+	);
+	assert.equal(xUpdates, 3,
+		"Source too."
+	);
+
+	assert.end();
+});
+
+test("Self referring constraint", (assert) => {
+	const x = tie(() => x.get() || 0 + 1);
+	assert.equal(x.get(), 1,
+		"Does not create infinite loop."
+	);
+	const y = tie(2);
+	y.get();
+	y.set(() => y.get() * 2)
+	assert.equal(y.get(), 4,
+		"Return the cached value when recursively called."
+	);
+	assert.end();
+});
