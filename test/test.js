@@ -154,16 +154,22 @@ test("Avoid update when parent are invalidated but did not change", (assert) => 
 	assert.end();
 });
 
-test("Self referring constraint", (assert) => {
+test("Cycles", (assert) => {
 	const x = tie(() => x.get() || 0 + 1);
 	assert.equal(x.get(), 1,
-		"Does not create infinite loop."
+		"Self referring constraint does not create infinite loop."
 	);
 	const y = tie(2);
 	y.get();
 	y.set(() => y.get() * 2)
 	assert.equal(y.get(), 4,
-		"Return the cached value when recursively called."
+		"Self referring constraint return the cached value when recursively called."
 	);
+    // This part is still under reflection.
+    // One other approach may be to allow self-invalidating evaluation (i.e. y below will always being invalid).
+    // However, such constraint will create an infinite loop if a liven makes use of it.
+    assert.equal(y.get(), 4,
+        "Self referring constraint are still validated and are not updated  at each call."
+    );
 	assert.end();
 });
