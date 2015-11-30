@@ -4,12 +4,12 @@ import tie from "../lib";
 
 test("Constraint ties", (assert) => {
 	var x = tie(2);
+    assert.equal(x.get(), 2,
+        "A constraint is equal to set value.");
 	var y = tie(() => 3);
+    assert.equal(y.get(), 3,
+        "A constraint value can be set with a function.");
 	var z = tie(() => x.get() * y.get());
-	assert.equal(x.get(), 2,
-		"A constraint is equal to set value.");
-	assert.equal(y.get(), 3,
-		"A constraint value can be set with a function.");
 	assert.equal(z.get(), 6,
 		"Constraint value can be calculated from other constraints.");
 	x.set(10);
@@ -65,7 +65,7 @@ test("Evaluations and dependency updates", (assert) => {
 		"A constraint is not evaluated uncessary."
 	)
 	assert.equal(cond.get(), "a",
-		"Proper constraint value.");
+		"Constraint value ok.");
 	assert.equal(xUpdates, 1,
 		"Dependencies are evaluated when a constraint is get."
 	);
@@ -74,7 +74,7 @@ test("Evaluations and dependency updates", (assert) => {
 	);
 	xSource.set("b");
 	assert.equal(cond.get(), "b",
-		"Proper constraint value after source reset.");
+		"Constraint value ok after source reset.");
 	assert.equal(xUpdates, 2,
 		"Source has been re-evaluated."
 	);
@@ -83,7 +83,7 @@ test("Evaluations and dependency updates", (assert) => {
 	);
 	det.set(false);
 	assert.equal(cond.get(), "",
-		"Source isn't a dependency anymore."
+		"Constraint value ok after source isn't a dependency anymore."
 	);
 	assert.equal(xUpdates, 2,
 		"Source has not been re-evaluated."
