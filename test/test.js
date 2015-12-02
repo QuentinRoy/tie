@@ -169,10 +169,13 @@ test("Avoid update when parent are invalidated but did not change", (assert) => 
 
 test("Cycles", (assert) => {
 	const x = tie(() => x.get() || 0 + 1);
-    assert.plan(5);
-	assert.equal(x.get(), 1,
-		"Self referring constraint does not create infinite loop."
+    assert.plan(6);
+	assert.doesNotThrow(x.get.bind(x),
+		"Self referring constraint does not create infinite loop..."
 	);
+    assert.equal(x.get(), 1,
+        "...and has the expected value."
+    )
 	const y = tie(2);
 	y.get();
 	y.set(() => y.get() * 2)
@@ -183,7 +186,7 @@ test("Cycles", (assert) => {
     // One other approach may be to allow self-invalidating evaluation (i.e. y below will always being invalid).
     // However, such constraint will create an infinite loop if a liven makes use of it.
     assert.equal(y.get(), 4,
-        "Self referring constraint are still validated and are not updated  at each call."
+        "Self referring constraint are validated and (so are not re-evaluated at each call)."
     );
     const a = tie(1);
     const b = tie(() => {
