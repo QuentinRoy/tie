@@ -1,4 +1,3 @@
-//import { expect } from "chai";
 import test from "tape";
 import tie from "../lib";
 
@@ -30,7 +29,7 @@ test("Constraint ties", (assert) => {
 	assert.equal(x.get(), 10,
 		"Constraint can be reset.");
 	assert.equal(z.get(), 30,
-		"Dependent constraint are updated when depedencies' value change.");
+		"Dependent constraints are updated when depedencies' value change.");
 
 	assert.end();
 });
@@ -170,6 +169,7 @@ test("Avoid update when parent are invalidated but did not change", (assert) => 
 
 test("Cycles", (assert) => {
 	const x = tie(() => x.get() || 0 + 1);
+    assert.plan(5);
 	assert.equal(x.get(), 1,
 		"Self referring constraint does not create infinite loop."
 	);
@@ -184,6 +184,23 @@ test("Cycles", (assert) => {
     // However, such constraint will create an infinite loop if a liven makes use of it.
     assert.equal(y.get(), 4,
         "Self referring constraint are still validated and are not updated  at each call."
+    );
+    const a = tie(1);
+    const b = tie(() => {
+        const aValue = a.get();
+        return aValue;
+    });
+    const c = tie(() => b.get());
+    const d = tie(() => {
+        const aValue = a.get();
+        assert.equal(aValue, 1,
+            "The same constraint has the same value during the whole cycle evaluation."
+        );
+    });
+    a.get();
+    a.set(() => c.get() + d.get());
+    assert.doesNotThrow(() => a.get(),
+        "Cyclic constraints does not create infinite loop."
     );
 	assert.end();
 });
