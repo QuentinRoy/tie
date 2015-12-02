@@ -29,7 +29,7 @@ test("Constraint ties", (assert) => {
 	assert.equal(x.get(), 10,
 		"Constraint can be reset.");
 	assert.equal(z.get(), 30,
-		"Dependent constraints are updated when depedencies' value change.");
+		"Dependent constraints are updated when dependencies' value change.");
 
 	assert.end();
 });
