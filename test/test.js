@@ -69,7 +69,9 @@ test("Evaluations and dependency updates", (assert) => {
 	const cond = tie(() => {
 		condUpdates++;
 		if(det.get()){
-			return x.get();
+            // Call it itentionally twice to make sure
+            // the dep is added only once
+			return x.get() + x.get();
 		} else {
 			return '';
 		}
@@ -77,7 +79,7 @@ test("Evaluations and dependency updates", (assert) => {
 	assert.equal(xUpdates, 0,
 		"A constraint is not evaluated uncessary."
 	)
-	assert.equal(cond.get(), "a",
+	assert.equal(cond.get(), "aa",
 		"Constraint value ok.");
 	assert.equal(xUpdates, 1,
 		"Dependencies are evaluated when a constraint is get."
@@ -86,7 +88,7 @@ test("Evaluations and dependency updates", (assert) => {
 		"A constraint is evaluated when get."
 	);
 	xSource.set("b");
-	assert.equal(cond.get(), "b",
+	assert.equal(cond.get(), "bb",
 		"Constraint value ok after source reset.");
 	assert.equal(xUpdates, 2,
 		"Source has been re-evaluated."
@@ -115,7 +117,7 @@ test("Evaluations and dependency updates", (assert) => {
 		"Constraint has not been re-evaluated after being requested."
 	);
 	det.set(true);
-	assert.equal(cond.get(), 'c',
+	assert.equal(cond.get(), 'cc',
 		"Constraint is now dependent of source again."
 	);
 	assert.equal(condUpdates, 4,
@@ -131,19 +133,19 @@ test("Evaluations and dependency updates", (assert) => {
 test("Avoid update when parent are invalidated but did not change", (assert) => {
 	let zn = 0;
 	let yn = 0;
-	const x = tie(0);
+	const x = tie("a");
 	const y = tie(() => {
 		yn++;
-		return x.get() == 3;
+		return x.get().length;
 	});
 	const z = tie(() => {
 		zn++;
-		return y.get() ? "ok": "not ok";
+		return "length: " + y.get();
 	});
 	z.get();
-	x.set(2);
+	x.set("b");
 	z.get();
-	assert.equal(y.get(), false,
+	assert.equal(y.get(), 1,
 		"Parent's value has not changed."
 	)
 	assert.equal(yn, 2,
@@ -152,8 +154,8 @@ test("Avoid update when parent are invalidated but did not change", (assert) => 
 	assert.equal(zn, 1,
 		"Constraint has not as its parent's value did not actually change."
 	);
-	x.set(3);
-	assert.equal(y.get(), true,
+	x.set("ab");
+	assert.equal(y.get(), 2,
 		"Value of constraint's parent has changed."
 	);
 	assert.equal(yn, 3,
@@ -206,4 +208,33 @@ test("Cycles", (assert) => {
         "Cyclic constraints does not create infinite loop."
     );
 	assert.end();
+});
+
+test("On may have changed", (assert) => {
+    const a = tie(0);
+    const b = tie(() => a.get() * a.get());
+    let changed = 0;
+    const handler = () => { changed++ };
+    b.onMayHaveChanged(handler);
+    b.get();
+    a.set(2)
+    assert.equal(changed, 1,
+        "Handler has been called after source has been re-set."
+    )
+    a.set(4);
+    assert.equal(changed, 1,
+        "Handler has not been called when source has been re-set as it was not fetch since last call."
+    )
+    b.get();
+    a.set(-4);
+    assert.equal(changed, 2,
+        "Handler has been called even if its value has not actually changed."
+    )
+    b.offMayHaveChanged(handler);
+    b.get();
+    a.set(8);
+    assert.equal(changed, 2,
+        "Handler has not been called as is has been removed from the listeners."
+    )
+    assert.end();
 });
