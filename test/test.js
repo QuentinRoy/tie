@@ -214,16 +214,17 @@ test("On may have changed", (assert) => {
     let handlerCall = 0;
     let evaluation = 0;
     const a = tie(0);
+    const abis = tie(() => a.get() * a.get());
     const b = tie(() => {
         evaluation++;
-        return a.get() * a.get()
+        return abis.get() + 1;
     });
     const handler = () => {
         handlerCall++
         a.get();
     };
     b.onMayHaveChanged(handler);
-    b.get();
+
     assert.equal(evaluation, 1,
         "Constraint has been evaluated for the first time."
     )
@@ -332,5 +333,29 @@ test("Multiple handlers", (assert) => {
     assert.deepEqual(calls, ['no check 1', 'no check 2'],
         "Handlers that does not check are still called following a \"false change alert\"."
     );
+    assert.end();
+});
+
+test("Liven", (assert) => {
+    const a = tie('a');
+    const b = tie('c');
+    const l = tie(() => b.get().length);
+    let called = 0;
+    tie.liven(() => {
+        a.get();
+        l.get();
+        called++;
+    });
+    assert.equal(called, 1,
+        "Liven is called when created."
+    )
+    a.set('d');
+    assert.equal(called, 2,
+        "Liven is called when one of its dependency changes."
+    )
+    b.set('u');
+    assert.equal(called, 2,
+        "Liven is not called when one of its dependency is re-evaluated but did not change."
+    )
     assert.end();
 });
