@@ -211,30 +211,126 @@ test("Cycles", (assert) => {
 });
 
 test("On may have changed", (assert) => {
+    let handlerCall = 0;
+    let evaluation = 0;
     const a = tie(0);
-    const b = tie(() => a.get() * a.get());
-    let changed = 0;
-    const handler = () => { changed++ };
+    const b = tie(() => {
+        evaluation++;
+        return a.get() * a.get()
+    });
+    const handler = () => {
+        handlerCall++
+        a.get();
+    };
     b.onMayHaveChanged(handler);
     b.get();
+    assert.equal(evaluation, 1,
+        "Constraint has been evaluated for the first time."
+    )
     a.set(2)
-    assert.equal(changed, 1,
+    assert.equal(handlerCall, 1,
         "Handler has been called after source has been re-set."
     )
+    assert.equal(evaluation, 1,
+        "The constraint has not been re-evaluated without beeing asked."
+    )
     a.set(4);
-    assert.equal(changed, 1,
-        "Handler has not been called when source has been re-set as it was not fetch since last call."
+    assert.equal(handlerCall, 2,
+        "Handler has been called when source has been re-set (even if it was not fetch since last call)."
     )
     b.get();
+    assert.equal(evaluation, 2,
+        "The constraint has been re-evaluated."
+    )
     a.set(-4);
-    assert.equal(changed, 2,
+    assert.equal(handlerCall, 3,
         "Handler has been called even if its value has not actually changed."
+    )
+    assert.equal(evaluation, 2,
+        "The constraint has not been re-evaluated without beeing asked."
     )
     b.offMayHaveChanged(handler);
     b.get();
     a.set(8);
-    assert.equal(changed, 2,
-        "Handler has not been called as is has been removed from the listeners."
+    assert.equal(handlerCall, 3,
+        "Handler has not been called as it has been removed from the listeners."
     )
+    assert.end();
+});
+
+test("On may have changed with check=true", (assert) => {
+    let handlerCall = 0;
+    let evaluation = 0;
+    const a = tie(0);
+    const b = tie(() => {
+        evaluation++;
+        return a.get() * a.get()
+    });
+    const handler = () => {
+        handlerCall++
+        a.get();
+    };
+    b.onMayHaveChanged(handler, true);
+    assert.equal(evaluation, 1,
+        "Constraint has been evaluated as the handler has check=true."
+    )
+    a.set(2)
+    assert.equal(handlerCall, 1,
+        "Handler has been called after source has been re-set."
+    )
+    assert.equal(evaluation, 2,
+        "The constraint has been automatically re-evaluated."
+    )
+    a.set(4);
+    assert.equal(handlerCall, 2,
+        "Handler has been called when source has been re-set again (even if the contraint has not been explecitly fetched)."
+    )
+    b.get();
+    assert.equal(evaluation, 3,
+        "The constraint has been automatically re-evaluated again."
+    )
+    a.set(-4);
+    assert.equal(handlerCall, 2,
+        "Handler has not been called has the constraint value has not actually changed."
+    )
+    assert.equal(evaluation, 4,
+        "The constraint has been automatically re-evaluated again."
+    )
+    b.offMayHaveChanged(handler);
+    b.get();
+    a.set(8);
+    assert.equal(handlerCall, 2,
+        "Handler has not been called as it has been removed from the listeners."
+    )
+    assert.end();
+});
+
+test("Multiple handlers", (assert) => {
+    let calls = [];
+    const a = tie(0);
+    const b = tie(() => a.get() * a.get());
+    b._debug = true;
+    b.onMayHaveChanged(() => {
+        calls.push('no check 1');
+        b.get();
+    });
+    b.onMayHaveChanged(() => {
+        calls.push('check 1')
+    }, true);
+    b.onMayHaveChanged(() => {
+        calls.push('no check 2');
+    });
+    b.onMayHaveChanged(() => {
+        calls.push('check 2');
+    }, true);
+    a.set(2);
+    assert.deepEqual(calls, ['no check 1', 'check 1', 'no check 2', 'check 2'],
+        "All handlers are called in the proper order following a constraint's value change."
+    );
+    calls = [];
+    a.set(-2); // b = a*a so it did not actually change
+    assert.deepEqual(calls, ['no check 1', 'no check 2'],
+        "Handlers that does not check are still called following a \"false change alert\"."
+    );
     assert.end();
 });
