@@ -306,7 +306,7 @@ test("On may have changed with check=true", (assert) => {
     assert.end();
 });
 
-test("Multiple handlers", (assert) => {
+test("Multiple on may have chagned handlers", (assert) => {
     let calls = [];
     const a = tie(0);
     const b = tie(() => a.get() * a.get());
@@ -360,8 +360,7 @@ test("Liven", (assert) => {
     assert.end();
 });
 
-// not supported yet
-test("Losange", (assert) => {
+test("Losange with on may have changed handler", (assert) => {
     const src = tie('');
     const len = tie(() => src.get().length);
     const o = tie(() => src.get().indexOf('o') >= 0);
@@ -374,11 +373,30 @@ test("Losange", (assert) => {
     });
     src.set('hello');
     assert.equal(called, 1,
-        "On change handler has been called only once");
+        "On change handler has been called only once.");
     src.set('bye');
     assert.equal(called, 2,
-        "On change handler has been called only twice");
+        "On change handler has been called only once (again).");
     assert.end();
-})
+});
 
-test("")
+test("Losange with liven", (assert) => {
+    const src = tie('');
+    const len = tie(() => src.get().length);
+    const o = tie(() => src.get().indexOf('o') >= 0);
+    const final = tie(
+        () => 'value: ' + src.get() + ', length: ' + len.get() + ', contains o: ' + o.get()
+    );
+    let called = 0;
+    tie.liven(() => {
+        final.get();
+        called++;
+    });
+    src.set('hello');
+    assert.equal(called, 2,
+        "Liven has been updated only once.");
+    src.set('bye');
+    assert.equal(called, 3,
+        "Liven has been updated only once (again).");
+    assert.end();
+});
