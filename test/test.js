@@ -359,3 +359,26 @@ test("Liven", (assert) => {
     )
     assert.end();
 });
+
+// not supported yet
+test.skip("Losange", (assert) => {
+    const src = tie('');
+    const len = tie(() => src.get().length);
+    const o = tie(() => src.get().indexOf('o') >= 0);
+    const final = tie(
+        () => 'value: ' + src.get() + ', length: ' + len.get() + ', contains o: ' + o.get()
+    );
+    let called = 0;
+    final.onMayHaveChanged(() => {
+        called++;
+    });
+    src.set('hello');
+    assert.equal(called, 1,
+        "On change handler has been called only once");
+    src.set('bye');
+    assert.equal(called, 2,
+        "On change handler has been called only twice");
+    assert.end();
+})
+
+test("")
