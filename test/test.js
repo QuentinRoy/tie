@@ -361,7 +361,7 @@ test("Liven", (assert) => {
 });
 
 // not supported yet
-test.skip("Losange", (assert) => {
+test("Losange", (assert) => {
     const src = tie('');
     const len = tie(() => src.get().length);
     const o = tie(() => src.get().indexOf('o') >= 0);
