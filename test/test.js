@@ -2,7 +2,7 @@ import test from "tape";
 import tie from "../lib";
 
 test("Module content", (assert) => {
-    const expectedContent = ["Constraint", "liven"];
+    const expectedContent = ["Constraint", "Liven", "liven"];
     const content = Object.keys(tie);
     expectedContent.forEach((k) => {
         assert.notOk(content.indexOf(k) < 0,
@@ -341,7 +341,7 @@ test("Liven", (assert) => {
     const b = tie('c');
     const l = tie(() => b.get().length);
     let called = 0;
-    tie.liven(() => {
+    const liven = tie.liven(() => {
         a.get();
         l.get();
         called++;
@@ -357,6 +357,25 @@ test("Liven", (assert) => {
     assert.equal(called, 2,
         "Liven is not called when one of its dependency is re-evaluated but did not change."
     )
+    liven.call();
+    assert.equal(called, 3,
+        "Liven can be manually called."
+    )
+    liven.stop();
+    a.set('u');
+    assert.equal(called, 3,
+        "Liven can be stopped and are not called anymore on change."
+    );
+    liven.resume();
+    assert.equal(called, 4,
+        "Liven can be resumed and will be automatically called if a constraint has changed when paused."
+    );
+    liven.stop();
+    liven.resume();
+    assert.equal(called, 4,
+        "But not if none has changed."
+    );
+
     assert.end();
 });
 
