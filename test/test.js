@@ -368,12 +368,7 @@ test("Liven", (assert) => {
     );
     liven.resume();
     assert.equal(called, 4,
-        "Liven can be resumed and will be automatically called if a constraint has changed when paused."
-    );
-    liven.stop();
-    liven.resume();
-    assert.equal(called, 4,
-        "But not if none has changed."
+        "Liven can be resumed and will be automatically called then."
     );
 
     assert.end();
