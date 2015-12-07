@@ -5,7 +5,7 @@
   "main": "dist/tie.js",
   "scripts": {
     "test": "babel-node test/test | ./node_modules/.bin/tap-spec",
-    "browser-test": "node test-server",
+    "browser-test": "./node_modules/.bin/karma start karma.conf.js",
     "build-dev": "./node_modules/.bin/webpack --config webpack.config.js",
     "build-prod": "./node_modules/.bin/webpack --config webpack.config.js --output-filename tie.min.js -p",
     "build": "npm run build-dev;npm run build-prod"
@@ -21,9 +21,12 @@
     "babel-loader": "^6.2.0",
     "babel-preset-es2015": "^6.1.18",
     "events": "^1.1.0",
+    "karma": "^0.13.15",
+    "karma-sourcemap-loader": "^0.3.6",
+    "karma-tap": "^1.0.3",
+    "karma-webpack": "^1.7.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.2.2",
-    "webpack": "^1.12.9",
-    "webpack-dev-server": "^1.14.0"
+    "webpack": "^1.12.9"
   }
 }
