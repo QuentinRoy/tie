@@ -306,7 +306,7 @@ test("On may have changed with check=true", (assert) => {
     assert.end();
 });
 
-test("Multiple on may have chagned handlers", (assert) => {
+test("Multiple on may have changed handlers", (assert) => {
     let calls = [];
     const a = tie(0);
     const b = tie(() => a.get() * a.get());
