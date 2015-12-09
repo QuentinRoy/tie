@@ -2,7 +2,7 @@ import test from "tape";
 import tie from "../lib";
 
 test("Module content", (assert) => {
-    const expectedContent = ["Constraint", "Liven", "liven"];
+    const expectedContent = ["Constraint", "Liven", "liven", "bindStyle", "bindClass"];
     const content = Object.keys(tie);
     expectedContent.forEach((k) => {
         assert.notOk(content.indexOf(k) < 0,
