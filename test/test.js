@@ -414,3 +414,96 @@ test("Losange with liven", (assert) => {
         "Liven has been updated only once (again).");
     assert.end();
 });
+
+test("Constraint Modifiers", (assert) => {
+
+    assert.test("Alter", (assert) => {
+        const a = tie(5);
+        const b = a.alter(x => x + 4);
+        assert.equal(b.get(), 9,
+            "Simple alter has the proper value."
+        );
+        a.set(6);
+        assert.equal(b.get(), 10,
+            "It is updated when the source constraint changes."
+        );
+        const c = tie(1);
+        const d = b.alter(x => x + c.get());
+        assert.equal(d.get(), 11,
+            "Alter works if the alter body fetches another constraint."
+        );
+        c.set(2);
+        assert.equal(d.get(), 12,
+            "It is updated if this other constraint changes."
+        );
+        a.set(0);
+        assert.equal(d.get(), 6,
+            "And continues to be updated if the source constraint changes."
+        );
+        assert.end();
+    });
+
+    assert.test("Prop", (assert) => {
+        const a = tie({
+            p1: 'p1-val',
+            p2: {
+                p21: 'p21-val',
+                p22: 'p22-val'
+            },
+            p3: 'p3-val'
+        });
+
+        const b = a.prop('p1');
+        assert.equal(b.get(), 'p1-val',
+            "Simple prop modifier gets the proper value."
+        );
+
+        const prop = tie('p1');
+        const c = a.prop(prop);
+        assert.equal(c.get(), 'p1-val',
+            "Prop can be defined by a constraint."
+        );
+        prop.set('p3');
+        assert.equal(c.get(), 'p3-val',
+            "It is updated when this constraint changes."
+        );
+
+        assert.equal(a.prop('p2', 'p21').get(), 'p21-val',
+            "Multi-level prop works."
+        );
+
+        const subPropNum = tie(1);
+        const subPropName = tie(() => 'p2' + subPropNum.get());
+        const d = a.prop('p2', subPropName);
+        assert.equal(d.get(), 'p21-val',
+            "Multi-level prop modifier with one level depending of a constraint works."
+        );
+        subPropNum.set(2);
+        assert.equal(d.get(), 'p22-val',
+            "It is updated if this constraint changes."
+        );
+        assert.end();
+    });
+
+    assert.test("Math", (assert) => {
+        const x = tie(0.2);
+        ["abs","acos","asin","asinh","atan","atanh","cbrt","ceil","clz32",
+         "cos","cosh","exp","expm1","floor","fround","imul","log","log10","log1p",
+         "log2","round","sign","sin","sinh","sqrt","tan","tanh","trunc"].forEach((op) => {
+            const xop = x[op]();
+            assert.equal(xop.get(), Math[op](0.2),
+                op + "(constraint) has the expected value."
+            );
+        });
+
+        // acoshx is NaN if x < 1
+        const acoshx = x.acosh();
+        x.set(5);
+        assert.equal(acoshx.get(), Math.acosh(5),
+            "acosh(constraint) has the expected value."
+        )
+        assert.end();
+    });
+
+    assert.end();
+});
