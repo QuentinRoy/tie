@@ -505,5 +505,27 @@ test("Constraint Modifiers", (assert) => {
         assert.end();
     });
 
+    assert.test("Static constraint combination", (assert) => {
+        const a = tie(5);
+        const b = tie(2);
+        const sum = tie.Constraint.sum(a, b, 6);
+        assert.equal(sum.get(), 5+2+6,
+            "Constraint sum is working."
+        );
+        a.set(3);
+        assert.equal(sum.get(), 3+2+6,
+            "It is updated when one of the constraints changes."
+        );
+        const product = tie.Constraint.product(a, b, 2);
+        assert.equal(product.get(), 3*2*2,
+            "Constraint product is working."
+        );
+        b.set(10);
+        assert.equal(product.get(), 3*10*2,
+            "It is updated when one of the constraints changes."
+        );
+        assert.end();
+    });
+
     assert.end();
 });
