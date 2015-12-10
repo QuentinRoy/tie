@@ -508,6 +508,7 @@ test("Constraint Modifiers", (assert) => {
     assert.test("Static constraint combination", (assert) => {
         const a = tie(5);
         const b = tie(2);
+
         const sum = tie.Constraint.sum(a, b, 6);
         assert.equal(sum.get(), 5+2+6,
             "Constraint sum is working."
@@ -516,6 +517,7 @@ test("Constraint Modifiers", (assert) => {
         assert.equal(sum.get(), 3+2+6,
             "It is updated when one of the constraints changes."
         );
+
         const product = tie.Constraint.product(a, b, 2);
         assert.equal(product.get(), 3*2*2,
             "Constraint product is working."
@@ -524,6 +526,25 @@ test("Constraint Modifiers", (assert) => {
         assert.equal(product.get(), 3*10*2,
             "It is updated when one of the constraints changes."
         );
+
+        const max = tie.Constraint.max(a, b, 11);
+        assert.equal(max.get(), 11,
+            "Constraint max is working."
+        );
+        a.set(20);
+        assert.equal(max.get(), 20,
+            "It is updated when one of the constraint changes."
+        );
+
+        const min = tie.Constraint.min(a, b, 0);
+        assert.equal(min.get(), 0,
+            "Constraint min is working."
+        );
+        b.set(-4);
+        assert.equal(min.get(), -4,
+            "It is updated when one of the constraint changes."
+        );
+
         assert.end();
     });
 
