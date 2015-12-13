@@ -443,6 +443,34 @@ test("Constraint Modifiers", (assert) => {
         assert.end();
     });
 
+    assert.test("IfElse", (assert) => {
+        const a = tie('a');
+        const b = tie('b');
+        const cond = tie(false);
+        const res = cond.ifElse(a, b);
+        assert.equal(res.get(), 'b',
+            "IfElse constriant gets the proper value."
+        );
+        cond.set(true);
+        assert.equal(res.get(), 'a',
+            "It is updated when the conditional constraint changes."
+        );
+        a.set('a2')
+        assert.equal(res.get(), 'a2',
+            "It is updated when the \"result\" constraint on which it depends changes."
+        );
+        let called = false;
+        res.onMayHaveChanged(() => {
+            called = true;
+        });
+        b.set('b3');
+        res.get();
+        assert.notOk(called,
+            "It is not updated if the \"result\" on which it does not depends change."
+        );
+        assert.end();
+    });
+
     assert.test("Prop", (assert) => {
         const a = tie({
             p1: 'p1-val',
