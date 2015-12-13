@@ -545,6 +545,15 @@ test("Constraint Modifiers", (assert) => {
             "It is updated when one of the constraint changes."
         );
 
+        const hypot = tie.Constraint.hypot(a, 8, b);
+        assert.equal(hypot.get(), Math.hypot(20, -4, 8),
+            "Constraint hypot is working."
+        );
+        a.set(2);
+        assert.equal(hypot.get(), Math.hypot(2, -4, 8),
+            "It is updated when one of the constraint changes."
+        );
+
         assert.end();
     });
 
