@@ -471,6 +471,61 @@ test("Constraint Modifiers", (assert) => {
         assert.end();
     });
 
+    assert.test("Parse Numbers", (assert) => {
+        const a = tie("3");
+        const b = tie("3.6");
+        const c = tie("3.1px");
+        const af = a.parseFloat();
+        const bf = b.parseFloat();
+        const cf = c.parseFloat();
+        const ai = a.parseInt();
+        const bi = b.parseInt();
+        const ci = c.parseInt();
+
+        assert.equal(af.get(), 3.0,
+            "parseFloat is working for integer strings."
+        );
+        assert.equal(ai.get(), 3,
+            "parseInt is working for integer strings."
+        );
+        a.set("7");
+        assert.equal(af.get(), 7.0,
+            "parseFloat is properly updated for integer strings."
+        );
+        assert.equal(ai.get(), 7,
+            "parseInt is properly updated for integer strings."
+        );
+
+        assert.equal(bf.get(), 3.6,
+            "parseFloat is working for float strings."
+        );
+        assert.equal(bi.get(), 3,
+            "parseInt is working for float strings."
+        );
+        b.set("49.1020");
+        assert.equal(bf.get(), 49.102,
+            "parseFloat is properly updated for float strings."
+        );
+        assert.equal(bi.get(), 49,
+            "parseInt is properly updated for float strings."
+        );
+
+        assert.equal(cf.get(), 3.1,
+            "parseFloat is working for float strings with letters."
+        );
+        assert.equal(ci.get(), 3,
+            "parseInt is working for float strings with letters."
+        );
+        c.set("32.100001 tie tie tie");
+        assert.equal(cf.get(), 32.100001,
+            "parseFloat is properly updated for float strings with letters."
+        );
+        assert.equal(ci.get(), 32,
+            "parseInt is properly updated for float strings with letters."
+        );
+        assert.end();
+    });
+
     assert.test("Prop", (assert) => {
         const a = tie({
             p1: 'p1-val',
