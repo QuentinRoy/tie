@@ -640,5 +640,42 @@ test("Constraint Modifiers", (assert) => {
         assert.end();
     });
 
+    assert.test("Unary operator", (assert) => {
+
+        assert.notOk(tie(true).not().get(),
+            "Not true is not ok."
+        );
+        assert.ok(tie(false).not().get(),
+            "Not false is ok."
+        );
+        assert.notOk(tie("thing").not().get(),
+            "Not truthy is not ok."
+        );
+        assert.ok(tie("").not().get(),
+            "Not not truthy is ok."
+        );
+
+        assert.equal(tie(5).neg().get(), -5,
+            "Positive neg is correct."
+        );
+        assert.equal(tie(-5).neg().get(), 5,
+            "Negative neg is correct."
+        );
+
+
+        assert.equal(tie(5).pos().get(), 5,
+            "Pos is working with numbers."
+        );
+        assert.equal(tie("-28").pos().get(), -28,
+            "Pos is working with strings."
+        );
+
+        assert.equal(tie(2).bitwiseNot().get(), ~2,
+            "bitwiseNot is working."
+        );
+
+        assert.end();
+    });
+
     assert.end();
 });
