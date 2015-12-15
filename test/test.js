@@ -664,6 +664,18 @@ test("Constraint Modifiers", (assert) => {
         assert.end();
     });
 
+    assert.test("Pow", (assert) => {
+        const a = tie(5);
+        const b = tie(3);
+
+        const pow = a.pow(b);
+        assert.equal(pow.get(), 125, "Pow is working...");
+        a.set(2); b.set(8);
+        assert.equal(pow.get(), 256, "...And is propertly updated.");
+
+        assert.end();
+    });
+
     assert.test("Static constraint combination", (assert) => {
         const a = tie(5);
         const b = tie(2);
@@ -711,6 +723,16 @@ test("Constraint Modifiers", (assert) => {
         a.set(2);
         assert.equal(hypot.get(), Math.hypot(2, -4, 8),
             "It is updated when one of the constraint changes."
+        );
+
+        a.set(90); b.set(15);
+        const atan2 = tie.Constraint.atan2(a, b);
+        assert.equal(atan2.get(), Math.atan2(90, 15),
+            "Constraint atan2 is working."
+        );
+        b.set(30);
+        assert.equal(atan2.get(), Math.atan2(90, 30),
+            "It is properly updated."
         );
 
         assert.end();
