@@ -671,7 +671,20 @@ test("Constraint Modifiers", (assert) => {
         );
 
         assert.equal(tie(2).bitwiseNot().get(), ~2,
-            "bitwiseNot is working."
+            "bitwiseNot is working with positive values."
+        );
+
+        assert.equal(tie(-2).bitwiseNot().get(), ~(-2),
+            "bitwiseNot is working with negative values."
+        );
+
+
+        assert.equal(tie("6").pos().get(), 6,
+            "Pos is working for a string."
+        );
+
+        assert.equal(tie([12]).pos().get(), 12,
+            "Pos is working for an array."
         );
 
         assert.end();
