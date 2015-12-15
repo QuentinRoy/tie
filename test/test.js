@@ -2,7 +2,8 @@ import test from "tape";
 import tie from "../lib";
 
 test("Module content", (assert) => {
-    const expectedContent = ["Constraint", "Liven", "liven", "bindStyle", "bindClass"];
+    const expectedContent = ["Constraint", "Liven", "liven", "bindStyle", "bindClass",
+                             "hypot", "max", "min", "sum", "product", "atan2"];
     const content = Object.keys(tie);
     expectedContent.forEach((k) => {
         assert.notOk(content.indexOf(k) < 0,
@@ -680,7 +681,7 @@ test("Constraint Modifiers", (assert) => {
         const a = tie(5);
         const b = tie(2);
 
-        const sum = tie.Constraint.sum(a, b, 6);
+        const sum = tie.sum(a, b, 6);
         assert.equal(sum.get(), 5+2+6,
             "Constraint sum is working."
         );
@@ -689,7 +690,7 @@ test("Constraint Modifiers", (assert) => {
             "It is updated when one of the constraints changes."
         );
 
-        const product = tie.Constraint.product(a, b, 2);
+        const product = tie.product(a, b, 2);
         assert.equal(product.get(), 3*2*2,
             "Constraint product is working."
         );
@@ -698,7 +699,7 @@ test("Constraint Modifiers", (assert) => {
             "It is updated when one of the constraints changes."
         );
 
-        const max = tie.Constraint.max(a, b, 11);
+        const max = tie.max(a, b, 11);
         assert.equal(max.get(), 11,
             "Constraint max is working."
         );
@@ -707,7 +708,7 @@ test("Constraint Modifiers", (assert) => {
             "It is updated when one of the constraint changes."
         );
 
-        const min = tie.Constraint.min(a, b, 0);
+        const min = tie.min(a, b, 0);
         assert.equal(min.get(), 0,
             "Constraint min is working."
         );
@@ -716,7 +717,7 @@ test("Constraint Modifiers", (assert) => {
             "It is updated when one of the constraint changes."
         );
 
-        const hypot = tie.Constraint.hypot(a, 8, b);
+        const hypot = tie.hypot(a, 8, b);
         assert.equal(hypot.get(), Math.hypot(20, -4, 8),
             "Constraint hypot is working."
         );
@@ -726,7 +727,7 @@ test("Constraint Modifiers", (assert) => {
         );
 
         a.set(90); b.set(15);
-        const atan2 = tie.Constraint.atan2(a, b);
+        const atan2 = tie.atan2(a, b);
         assert.equal(atan2.get(), Math.atan2(90, 15),
             "Constraint atan2 is working."
         );
