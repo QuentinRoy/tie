@@ -1,8 +1,4 @@
 window.addEventListener("load", function(){
-    function monitor(cst, name){
-        tie.liven(function(){ console.log(name+":", cst.get())});
-    }
-
     var mousePosition = tie({x: 0, y: 0});
     document.addEventListener("mousemove", function(evt){
         mousePosition.set({ x: evt.pageX, y: evt.pageY });
@@ -10,6 +6,10 @@ window.addEventListener("load", function(){
 
     var eyeSizeSlider = document.querySelector("#eyes-size");
     var pupilSizeSlider = document.querySelector("#pupil-size");
+    var eyeBorder = tie(function(){
+        var eye = document.querySelector(".eye");
+        return parseInt(getComputedStyle(eye)["border-width"]);
+    });
 
     var eyeSliderVal = tie(function(){ return eyeSizeSlider.value });
     var pupilSliderVal = tie(function(){ return pupilSizeSlider.value });
@@ -17,9 +17,9 @@ window.addEventListener("load", function(){
     pupilSizeSlider.addEventListener("input", pupilSliderVal.invalidate.bind(pupilSliderVal));
 
     var eyeRadius = tie(eyeSliderVal).parseFloat();
-    var pupilRadius = tie(function(){
-        return Math.min(parseFloat(pupilSliderVal.get()), eyeRadius.get());
-    });
+    var pupilRadius = tie.min(
+        pupilSliderVal.parseFloat(), eyeRadius
+    );
     var pupilClass = eyeRadius.lte(pupilRadius).ifElse("red");
 
     ['left', 'right'].forEach(function(side){
@@ -29,11 +29,11 @@ window.addEventListener("load", function(){
         eyeRadius.onMayHaveChanged(eyePos.invalidate.bind(eyePos));
         var dx = eyePos.prop("left").add(eyeRadius).sub(mousePosition.prop('x'));
         var dy = eyePos.prop("top").add(eyeRadius).sub(mousePosition.prop('y'));
-        var d  = tie.Constraint.min(
+        var d  = tie.min(
             eyeRadius.sub(pupilRadius),
-            tie.Constraint.sum(dx.pow(2), dy.pow(2)).sqrt()
+            tie.sum(dx.pow(2), dy.pow(2)).sqrt()
         );
-        var angle   = dy.atan2(dx);
+        var angle   = tie.atan2(dy, dx);
         var eyeLeft = eyeRadius.sub(pupilRadius, d.mul(angle.cos()));
         var eyeTop  = eyeRadius.sub(pupilRadius, d.mul(angle.sin()));
         tie.bindStyle(eye, {
