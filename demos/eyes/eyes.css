@@ -1,22 +1,6 @@
-.eye {
-	position: relative;
-	display: inline-block;
-	margin: 5px 10px;
-	border-radius: 100%;
-	width: 50px;
-	height: 50px;
-	border-color: black;
-	border-style: solid;
-}
-
-.pupil {
-	position: absolute;
-	border-radius: 100%;
-	background-color: black;
-	width: 10px;
-	height: 10px;
-}
-
 .pupil.red {
 	background-color: red;
+}
+#control label {
+	margin-left: 0.5em;
 }
