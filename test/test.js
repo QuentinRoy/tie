@@ -568,6 +568,34 @@ test("Constraint Modifiers", (assert) => {
         assert.end();
     });
 
+    assert.test("Other operators that can be applied multiple times.", (assert) => {
+        const a = tie(8);
+        const b = tie(13);
+        const c = tie(0.5);
+
+        const add = a.add(b, c, 1);
+        assert.equal(add.get(), 8 + 13 + 0.5 + 1, "Add gets the correct value..." );
+        a.set(5); b.set(10)
+        assert.equal(add.get(), 5 + 10 + 0.5 + 1, "...And is properly updated." );
+
+        const sub = a.sub(b, c, -5);
+        assert.equal(sub.get(), 5 - 10 - 0.5 + 5, "Sub gets the correct value...");
+        a.set(7); b.set(-14);
+        assert.equal(sub.get(), 7 + 14 - 0.5 + 5, "...And is properly updated.");
+
+        const mul = a.mul(b, c, 3);
+        assert.equal(mul.get(), 7 * (-14) * 0.5 * 3, "Mul gets the correct value...");
+        b.set(2.6); c.set(0.8);
+        assert.equal(mul.get(), 7 * 2.6 * 0.8 * 3, "...And is properly updated.");
+
+        const div = b.div(c, a, 2);
+        assert.equal(div.get(), 2.6 / 0.8 / 7 / 2, "Div gets the correct value...");
+        c.set(4); a.set(1);
+        assert.equal(div.get(), 2.6 / 4 / 1 / 2, "...And is properly updated.");
+
+        assert.end();
+    });
+
     assert.test("Math", (assert) => {
         const x = tie(0.2);
         ["abs","acos","asin","asinh","atan","atanh","cbrt","ceil","clz32",
