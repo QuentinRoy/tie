@@ -616,6 +616,54 @@ test("Constraint Modifiers", (assert) => {
         assert.end();
     });
 
+    assert.test("Equals and not equals", (assert) => {
+        const a = tie(6);
+        const b = tie(6);
+        const eqStrict = a.eq(b);
+        const neqStrict = a.neq(b);
+        const eqLoose = a.looseEq(b);
+        const neqLoose = a.looseNeq(b);
+        assert.ok(eqStrict.get(), "eqStrict is working with a===b.");
+        assert.ok(eqLoose.get(), "eqLoose is working with a===b.");
+        assert.notOk(neqStrict.get(), "neqStrict is working with a===b.");
+        assert.notOk(neqLoose.get(), "neqLoose is working with a===b.");
+        b.set(7);
+        assert.notOk(eqStrict.get(), "eqStrict is working with a!==b.");
+        assert.notOk(eqLoose.get(), "eqLoose is working with a!==b.");
+        assert.ok(neqStrict.get(), "neqStrict is working with a!==b.");
+        assert.ok(neqLoose.get(), "neqLoose is working with a!==b.");
+        a.set("7");
+        assert.notOk(eqStrict.get(), "eqStrict is working with a==b but not a===b.");
+        assert.ok(eqLoose.get(), "eqLoose is working with a==b but not a===b.");
+        assert.ok(neqStrict.get(), "neqStrict is working with a==b but not a===b.");
+        assert.notOk(neqLoose.get(), "neqLoose is working with a==b but not a===b.");
+        assert.end();
+    });
+
+    assert.test("Greaters and Lessers", (assert) => {
+        const a = tie(6);
+        const b = tie("6");
+        const gt = a.gt(b);
+        const gte = a.gte(b);
+        const lt = a.lt(b);
+        const lte = a.lte(b);
+        assert.notOk(gt.get(), "gt is working with a===b.");
+        assert.ok(gte.get(), "gte is working with a===b.");
+        assert.notOk(lt.get(), "lt is working with a===b.");
+        assert.ok(lte.get(), "lte is working with a===b.");
+        b.set("7");
+        assert.notOk(gt.get(), "gt is working with a > b.");
+        assert.notOk(gte.get(), "gte is working with a > b.");
+        assert.ok(lt.get(), "lt is working with a > b.");
+        assert.ok(lte.get(), "lte is working with a > b.");
+        a.set(10);
+        assert.ok(gt.get(), "gt is working with a < b.");
+        assert.ok(gte.get(), "gte is working with a < b.");
+        assert.notOk(lt.get(), "lt is working with a < b.");
+        assert.notOk(lte.get(), "lte is working with a < b.");
+        assert.end();
+    });
+
     assert.test("Static constraint combination", (assert) => {
         const a = tie(5);
         const b = tie(2);
