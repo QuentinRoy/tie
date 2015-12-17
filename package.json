@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/tie.js",
   "scripts": {
-    "test": "babel-node test/test | ./node_modules/.bin/tap-spec",
+    "test": "babel-node tests | ./node_modules/.bin/tap-spec",
     "browser-test": "./node_modules/.bin/karma start karma.conf.js",
     "build-dev": "./node_modules/.bin/webpack --config webpack.config.js",
     "build-prod": "./node_modules/.bin/webpack --config webpack.config.js --output-filename tie.min.js -p",
