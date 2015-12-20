@@ -20,6 +20,7 @@
     "babel-core": "^6.2.1",
     "babel-loader": "^6.2.0",
     "babel-preset-es2015": "^6.1.18",
+    "deep-equal": "^1.0.1",
     "events": "^1.1.0",
     "karma": "^0.13.15",
     "karma-sourcemap-loader": "^0.3.6",
