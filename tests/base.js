@@ -152,7 +152,26 @@ test("Avoid update when parent are invalidated but did not change", (assert) => 
     z.get();
     assert.equal(zn, lastZn + 1,
         "Constraint is re-evaluated."
-    )
+    );
+    assert.end();
+});
+
+test("Special case NaN to NaN change", (assert) => {
+    const src = tie("Not a number");
+    let called = 0;
+    const val = tie(() => parseInt(src.get(), 10));
+    const target = tie(() => {
+        called++;
+        return isNaN(val.get());
+    });
+    assert.ok(target.get(),
+        "The constraint is NaN."
+    );
+    src.set("Still not a number");
+    target.get();
+    assert.equal(called, 1,
+        "NaN -> NaN changes does not trigger dependencies' update"
+    );
     assert.end();
 });
 
