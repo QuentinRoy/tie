@@ -16,7 +16,6 @@ test("Equals setting", (assert) => {
     assert.equals(changed, 3,
         "...And notifies it listeners each time a different value is set.");
 
-
     changed = 0;
     const looseCon = tie("4", { equals: (a, b) => a == b });
     looseCon.onMayHaveChanged(() => changed++, true);
@@ -51,18 +50,18 @@ test("Read-Only", (assert) => {
     assert.end();
 });
 
-test("Undetachable", (assert) => {
+test("Un-Untieable", (assert) => {
     const src = tie("value");
-    const udc = tie(src, { detachable: false });
+    const udc = tie(src, { untieable: false });
     assert.equals(udc.get(), "value",
         "Undetachable constraints get the proper value.");
-    assert.throws(() => udc.detach(),
+    assert.throws(() => udc.untie(),
         "Undetachable constraints cannot be detached.");
-    assert.ok(src.detachable,
-        "Per default, constraint are detachable and their detachable getter is true.");
-    assert.notOk(udc.detachable,
-        "detachable getter is false for undetachable constraints.");
-    src.detach();
+    assert.ok(src.untieable,
+        "Per default, constraint are untieable and their untieable getter is true.");
+    assert.notOk(udc.untieable,
+        "untieable getter is false for undetachable constraints.");
+    src.untie();
     assert.equals(src.get(), void(0),
         "Per default, constraint can be detached");
     assert.end();
@@ -75,11 +74,11 @@ test("View", (assert) => {
         "Views get their source's value.");
     assert.ok(view.readOnly,
         "View's read-only getter is properly set.");
-    assert.notOk(view.detachable,
-        "View's detachable getter is properly set.");
+    assert.notOk(view.untieable,
+        "View's untieable getter is properly set.");
     assert.throws(() => view.set(8),
         "Views cannot be set.");
-    assert.throws(() => view.detach(),
+    assert.throws(() => view.untie(),
         "Views cannot be detached.");
     assert.end();
 });
