@@ -24,7 +24,7 @@ test("Constraint ties", (assert) => {
 test("Constraint set to constraint", (assert) => {
     var x = tie('x');
     var y = tie('y');
-    var z = tie(x);
+    var z = tie(x, { readOnly: false });
 
     assert.equal(z.get(), 'x',
         "Constraint set to a constraint get its value."
