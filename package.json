@@ -1,6 +1,6 @@
 {
   "name": "tie",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "main": "dist/tie.js",
   "scripts": {
@@ -15,7 +15,15 @@
     "events"
   ],
   "author": "Quentin Roy <quentin@quentinroy.fr>",
-  "license": "ISC",
+  "directories": {
+    "example": "demos",
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/QuentinRoy/tie.git"
+  },
+  "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.2.1",
     "babel-loader": "^6.2.0",
