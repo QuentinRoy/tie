@@ -206,3 +206,21 @@ test("Losange with liven", (assert) => {
         "Liven has been updated only once (again).");
     assert.end();
 });
+
+test("Events are sent once all dependent constraints has been notified", (assert) => {
+    const src = tie(0);
+    const dep = src.add(5);
+    let handlerDepVal;
+    src.onMayHaveChanged(() => {
+        handlerDepVal = dep.get();
+    });
+    // update dep
+    dep.get();
+    // invalid it by changing the source, handlerDepVal will be updated
+    src.set(20);
+    assert.equal(handlerDepVal, 25,
+        "All constraints are up to date when the events are processed."
+    );
+    assert.end();
+});
+
