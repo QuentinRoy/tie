@@ -2,7 +2,7 @@ import test from "tape";
 import tie from "../lib";
 
 
-test("On may have changed", (assert) => {
+test("On change", (assert) => {
     let handlerCall = 0;
     let evaluation = 0;
     const a = tie(0);
@@ -15,7 +15,7 @@ test("On may have changed", (assert) => {
         handlerCall++
         a.get();
     };
-    b.onMayHaveChanged(handler);
+    b.onChange(handler);
 
     assert.equal(evaluation, 1,
         "Constraint has been evaluated for the first time."
@@ -42,7 +42,7 @@ test("On may have changed", (assert) => {
     assert.equal(evaluation, 2,
         "The constraint has not been re-evaluated without beeing asked."
     )
-    b.offMayHaveChanged(handler);
+    b.offChange(handler);
     b.get();
     a.set(8);
     assert.equal(handlerCall, 3,
@@ -51,7 +51,7 @@ test("On may have changed", (assert) => {
     assert.end();
 });
 
-test("On may have changed with check=true", (assert) => {
+test("On change with check=true", (assert) => {
     let handlerCall = 0;
     let evaluation = 0;
     const a = tie(0);
@@ -63,7 +63,7 @@ test("On may have changed with check=true", (assert) => {
         handlerCall++
         a.get();
     };
-    b.onMayHaveChanged(handler, true);
+    b.onChange(handler, true);
     assert.equal(evaluation, 1,
         "Constraint has been evaluated as the handler has check=true."
     )
@@ -89,7 +89,7 @@ test("On may have changed with check=true", (assert) => {
     assert.equal(evaluation, 4,
         "The constraint has been automatically re-evaluated again."
     )
-    b.offMayHaveChanged(handler);
+    b.offChange(handler);
     b.get();
     a.set(8);
     assert.equal(handlerCall, 2,
@@ -98,22 +98,22 @@ test("On may have changed with check=true", (assert) => {
     assert.end();
 });
 
-test("Multiple on may have changed handlers", (assert) => {
+test("Multiple on change handlers", (assert) => {
     let calls = [];
     const a = tie(0);
     const b = tie(() => a.get() * a.get());
     b._debug = true;
-    b.onMayHaveChanged(() => {
+    b.onChange(() => {
         calls.push('no check 1');
         b.get();
     });
-    b.onMayHaveChanged(() => {
+    b.onChange(() => {
         calls.push('check 1')
     }, true);
-    b.onMayHaveChanged(() => {
+    b.onChange(() => {
         calls.push('no check 2');
     });
-    b.onMayHaveChanged(() => {
+    b.onChange(() => {
         calls.push('check 2');
     }, true);
     a.set(2);
@@ -166,7 +166,7 @@ test("Liven", (assert) => {
     assert.end();
 });
 
-test("Losange with on may have changed handler", (assert) => {
+test("Losange with on change handler", (assert) => {
     const src = tie('');
     const len = tie(() => src.get().length);
     const o = tie(() => src.get().indexOf('o') >= 0);
@@ -174,7 +174,7 @@ test("Losange with on may have changed handler", (assert) => {
         () => 'value: ' + src.get() + ', length: ' + len.get() + ', contains o: ' + o.get()
     );
     let called = 0;
-    final.onMayHaveChanged(() => {
+    final.onChange(() => {
         called++;
     });
     src.set('hello');
