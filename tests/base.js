@@ -28,7 +28,7 @@ test("Constraint set to constraint", (assert) => {
 
     assert.equal(z.get(), 'x',
         "Constraint set to a constraint get its value."
-    )
+    );
     z.set('z');
     assert.equal(z.get(), 'z',
         "It can be reset..."
@@ -65,7 +65,7 @@ test("Evaluations and dependency updates", (assert) => {
     });
     assert.equal(xUpdates, 0,
         "A constraint is not evaluated uncessary."
-    )
+    );
     assert.equal(cond.get(), "aa",
         "Constraint value ok.");
     assert.equal(xUpdates, 1,
@@ -134,7 +134,7 @@ test("Avoid update when parent are invalidated but did not change", (assert) => 
     z.get();
     assert.equal(y.get(), 1,
         "Parent's value has not changed."
-    )
+    );
     assert.equal(yn, 2,
         "Constraint's parent has been re-evaluated."
     );
@@ -183,10 +183,10 @@ test("Cycles", (assert) => {
     );
     assert.equal(x.get(), 1,
         "...and has the expected value."
-    )
+    );
     const y = tie(2);
     y.get();
-    y.set(() => y.get() * 2)
+    y.set(() => y.get() * 2);
     assert.equal(y.get(), 4,
         "Self referring constraint return the cached value when recursively called."
     );
