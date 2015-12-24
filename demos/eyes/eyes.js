@@ -1,20 +1,22 @@
-function createEye(mainDiv, eyeRadius, pupilRadius, focusPosition, bigPupilColor){
+function Eye(mainDiv, eyeRadius, pupilRadius, focusPosition, bigPupilColor){
     // create the DOM
-    var eyeDiv = document.createElement('div');
-    var pupilDiv = document.createElement('pupil');
+    var eyeDiv = document.createElement("div");
+    var pupilDiv = document.createElement("pupil");
     eyeDiv.appendChild(pupilDiv);
     mainDiv.appendChild(eyeDiv);
 
-    // retrieve eye position and manually update it when necessary
-    var eyePos = tie(function() { return { left: eyeDiv.offsetLeft, top: eyeDiv.offsetTop }; });
-    eyeRadius.onMayHaveChanged(eyePos.invalidate.bind(eyePos));
+    var eyeBorderWidth = tie(2);
 
     // make sure the pupil cannot be bigger than the eye
-    pupilRadius = tie.min(pupilRadius, eyeRadius)
+    pupilRadius = tie.min(pupilRadius, eyeRadius);
 
     // calculate pupil position
-    var dx = eyePos.prop("left").add(eyeRadius).sub(focusPosition.prop('x'));
-    var dy = eyePos.prop("top").add(eyeRadius).sub(focusPosition.prop('y'));
+    var dx = eyeRadius.add(eyeBorderWidth).sub(focusPosition.prop("x")).alter(function(x){
+        return x + eyeDiv.offsetLeft
+    });
+    var dy = eyeRadius.add(eyeBorderWidth).sub(focusPosition.prop("y")).alter(function(y){
+        return y + eyeDiv.offsetTop
+    });
     var d  = tie.min(
         eyeRadius.sub(pupilRadius),
         tie.sum(dx.pow(2), dy.pow(2)).sqrt()
@@ -29,8 +31,9 @@ function createEye(mainDiv, eyeRadius, pupilRadius, focusPosition, bigPupilColor
     tie.bindStyle(eyeDiv, {
         "position": "relative",
         "display": "inline-block",
-        "margin": "5px 10px",
+        "margin": "5px 4px",
         "border-radius": "100%",
+        "border-width": eyeBorderWidth.add("px"),
         "border-color": "black",
         "border-style": "solid",
         "height": eyeRadius.mul(2).add("px"),
@@ -64,6 +67,8 @@ window.addEventListener("load", function(){
     var eyeRadius = eyeSliderVal.parseFloat();
     var pupilRadius = pupilSliderVal.parseFloat();
 
-    createEye(document.querySelector("#eyes"), eyeRadius, pupilRadius, mousePosition, "yellow");
-    createEye(document.querySelector("#eyes"), eyeRadius.mul(0.7), pupilRadius.mul(0.8), mousePosition, "red");
+    var leftEye = new Eye(document.querySelector("#eyes"),
+                          eyeRadius, pupilRadius, mousePosition, "lightgray");
+    var rightEye = new Eye(document.querySelector("#eyes"),
+                           eyeRadius.mul(0.7), pupilRadius.mul(0.8), mousePosition, "lightgray");
 });
