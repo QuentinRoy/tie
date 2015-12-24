@@ -45,7 +45,7 @@ test("IfElse", (assert) => {
         "It is updated when the \"result\" constraint on which it depends changes."
     );
     let called = false;
-    res.onChange(() => {
+    res.onUnsettled(() => {
         called = true;
     });
     b.set('b3');
@@ -232,10 +232,10 @@ test("Greaters and Lessers", (assert) => {
     const gte = a.gte(b);
     const lt = a.lt(b);
     const lte = a.lte(b);
-    assert.notOk(gt.get(), "gt is working with a===b.");
-    assert.ok(gte.get(), "gte is working with a===b.");
-    assert.notOk(lt.get(), "lt is working with a===b.");
-    assert.ok(lte.get(), "lte is working with a===b.");
+    assert.notOk(gt.get(), "gt is working with a === b.");
+    assert.ok(gte.get(), "gte is working with a === b.");
+    assert.notOk(lt.get(), "lt is working with a === b.");
+    assert.ok(lte.get(), "lte is working with a === b.");
     b.set("7");
     assert.notOk(gt.get(), "gt is working with a > b.");
     assert.notOk(gte.get(), "gte is working with a > b.");

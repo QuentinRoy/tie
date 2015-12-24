@@ -2,7 +2,7 @@ import test from "tape";
 import tie from "../lib";
 
 
-test("On change", (assert) => {
+test("On unsettled", (assert) => {
     let handlerCall = 0;
     let evaluation = 0;
     const a = tie(0);
@@ -15,43 +15,43 @@ test("On change", (assert) => {
         handlerCall++
         a.get();
     };
-    b.onChange(handler);
+    b.onUnsettled(handler);
 
     assert.equal(evaluation, 1,
         "Constraint has been evaluated for the first time."
-    )
+    );
     a.set(2)
     assert.equal(handlerCall, 1,
         "Handler has been called after source has been re-set."
-    )
+    );
     assert.equal(evaluation, 1,
         "The constraint has not been re-evaluated without beeing asked."
-    )
+    );
     a.set(4);
     assert.equal(handlerCall, 2,
         "Handler has been called when source has been re-set (even if it was not fetch since last call)."
-    )
+    );
     b.get();
     assert.equal(evaluation, 2,
         "The constraint has been re-evaluated."
-    )
+    );
     a.set(-4);
     assert.equal(handlerCall, 3,
         "Handler has been called even if its value has not actually changed."
-    )
+    );
     assert.equal(evaluation, 2,
         "The constraint has not been re-evaluated without beeing asked."
-    )
-    b.offChange(handler);
+    );
+    b.offUnsettled(handler);
     b.get();
     a.set(8);
     assert.equal(handlerCall, 3,
         "Handler has not been called as it has been removed from the listeners."
-    )
+    );
     assert.end();
 });
 
-test("On change with check=true", (assert) => {
+test("On unsettled with check=true", (assert) => {
     let handlerCall = 0;
     let evaluation = 0;
     const a = tie(0);
@@ -63,57 +63,57 @@ test("On change with check=true", (assert) => {
         handlerCall++
         a.get();
     };
-    b.onChange(handler, true);
+    b.onUnsettled(handler, true);
     assert.equal(evaluation, 1,
         "Constraint has been evaluated as the handler has check=true."
-    )
+    );
     a.set(2)
     assert.equal(handlerCall, 1,
         "Handler has been called after source has been re-set."
-    )
+    );
     assert.equal(evaluation, 2,
         "The constraint has been automatically re-evaluated."
-    )
+    );
     a.set(4);
     assert.equal(handlerCall, 2,
         "Handler has been called when source has been re-set again (even if the contraint has not been explecitly fetched)."
-    )
+    );
     b.get();
     assert.equal(evaluation, 3,
         "The constraint has been automatically re-evaluated again."
-    )
+    );
     a.set(-4);
     assert.equal(handlerCall, 2,
         "Handler has not been called has the constraint value has not actually changed."
-    )
+    );
     assert.equal(evaluation, 4,
         "The constraint has been automatically re-evaluated again."
-    )
-    b.offChange(handler);
+    );
+    b.offUnsettled(handler);
     b.get();
     a.set(8);
     assert.equal(handlerCall, 2,
         "Handler has not been called as it has been removed from the listeners."
-    )
+    );
     assert.end();
 });
 
-test("Multiple on change handlers", (assert) => {
+test("Multiple on unsettled handlers", (assert) => {
     let calls = [];
     const a = tie(0);
     const b = tie(() => a.get() * a.get());
     b._debug = true;
-    b.onChange(() => {
+    b.onUnsettled(() => {
         calls.push('no check 1');
         b.get();
     });
-    b.onChange(() => {
+    b.onUnsettled(() => {
         calls.push('check 1')
     }, true);
-    b.onChange(() => {
+    b.onUnsettled(() => {
         calls.push('no check 2');
     });
-    b.onChange(() => {
+    b.onUnsettled(() => {
         calls.push('check 2');
     }, true);
     a.set(2);
@@ -140,19 +140,19 @@ test("Liven", (assert) => {
     });
     assert.equal(called, 1,
         "Liven is called when created."
-    )
+    );
     a.set('d');
     assert.equal(called, 2,
         "Liven is called when one of its dependency changes."
-    )
+    );
     b.set('u');
     assert.equal(called, 2,
         "Liven is not called when one of its dependency is re-evaluated but did not change."
-    )
+    );
     liven.call();
     assert.equal(called, 3,
         "Liven can be manually called."
-    )
+    );
     liven.stop();
     a.set('u');
     assert.equal(called, 3,
@@ -166,7 +166,7 @@ test("Liven", (assert) => {
     assert.end();
 });
 
-test("Losange with on change handler", (assert) => {
+test("Losange with on unsettled handler", (assert) => {
     const src = tie('');
     const len = tie(() => src.get().length);
     const o = tie(() => src.get().indexOf('o') >= 0);
@@ -174,15 +174,15 @@ test("Losange with on change handler", (assert) => {
         () => 'value: ' + src.get() + ', length: ' + len.get() + ', contains o: ' + o.get()
     );
     let called = 0;
-    final.onChange(() => {
+    final.onUnsettled(() => {
         called++;
     });
     src.set('hello');
     assert.equal(called, 1,
-        "On change handler has been called only once.");
+        "On unsettled handler has been called only once.");
     src.set('bye');
     assert.equal(called, 2,
-        "On change handler has been called only once (again).");
+        "On unsettled handler has been called only once (again).");
     assert.end();
 });
 
@@ -206,3 +206,21 @@ test("Losange with liven", (assert) => {
         "Liven has been updated only once (again).");
     assert.end();
 });
+
+test("Events are sent once all dependent constraints has been notified", (assert) => {
+    const src = tie(0);
+    const dep = src.add(5);
+    let handlerDepVal;
+    src.onUnsettled(() => {
+        handlerDepVal = dep.get();
+    });
+    // update dep
+    dep.get();
+    // invalid it by changing the source, handlerDepVal will be updated
+    src.set(20);
+    assert.equal(handlerDepVal, 25,
+        "All constraints are up to date when the events are processed."
+    );
+    assert.end();
+});
+
