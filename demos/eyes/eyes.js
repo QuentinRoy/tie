@@ -1,4 +1,6 @@
-function Eye(mainDiv, eyeRadius, pupilRadius, focusPosition, bigPupilColor){
+/*global tie*/
+
+function createEye(mainDiv, eyeRadius, pupilRadius, focusPosition, bigPupilColor){
     // create the DOM
     var eyeDiv = document.createElement("div");
     var pupilDiv = document.createElement("pupil");
@@ -12,10 +14,10 @@ function Eye(mainDiv, eyeRadius, pupilRadius, focusPosition, bigPupilColor){
 
     // calculate pupil position
     var dx = eyeRadius.add(eyeBorderWidth).sub(focusPosition.prop("x")).alter(function(x){
-        return x + eyeDiv.offsetLeft
+        return x + eyeDiv.offsetLeft;
     });
     var dy = eyeRadius.add(eyeBorderWidth).sub(focusPosition.prop("y")).alter(function(y){
-        return y + eyeDiv.offsetTop
+        return y + eyeDiv.offsetTop;
     });
     var d  = tie.min(
         eyeRadius.sub(pupilRadius),
@@ -59,16 +61,16 @@ window.addEventListener("load", function(){
 
     var eyeSizeSlider = document.querySelector("#eyes-size");
     var pupilSizeSlider = document.querySelector("#pupils-size");
-    var eyeSliderVal = tie(function(){ return eyeSizeSlider.value });
-    var pupilSliderVal = tie(function(){ return pupilSizeSlider.value });
+    var eyeSliderVal = tie(function(){ return eyeSizeSlider.value; });
+    var pupilSliderVal = tie(function(){ return pupilSizeSlider.value; });
     eyeSizeSlider.addEventListener("input", eyeSliderVal.invalidate.bind(eyeSliderVal));
     pupilSizeSlider.addEventListener("input", pupilSliderVal.invalidate.bind(pupilSliderVal));
 
     var eyeRadius = eyeSliderVal.parseFloat();
     var pupilRadius = pupilSliderVal.parseFloat();
 
-    var leftEye = new Eye(document.querySelector("#eyes"),
-                          eyeRadius, pupilRadius, mousePosition, "lightgray");
-    var rightEye = new Eye(document.querySelector("#eyes"),
-                           eyeRadius.mul(0.7), pupilRadius.mul(0.8), mousePosition, "lightgray");
+    createEyeEye(document.querySelector("#eyes"),
+                 eyeRadius, pupilRadius, mousePosition, "lightgray");
+    createEyeEye(document.querySelector("#eyes"),
+                 eyeRadius.mul(0.7), pupilRadius.mul(0.8), mousePosition, "lightgray");
 });
