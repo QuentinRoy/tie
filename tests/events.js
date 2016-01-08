@@ -1,57 +1,7 @@
 import test from "tape";
 import tie from "../lib";
 
-
-test("On unsettled", (assert) => {
-    let handlerCall = 0;
-    let evaluation = 0;
-    const a = tie(0);
-    const abis = tie(() => a.get() * a.get());
-    const b = tie(() => {
-        evaluation++;
-        return abis.get() + 1;
-    });
-    const handler = () => {
-        handlerCall++
-        a.get();
-    };
-    b.onUnsettled(handler);
-
-    assert.equal(evaluation, 1,
-        "Constraint has been evaluated for the first time."
-    );
-    a.set(2)
-    assert.equal(handlerCall, 1,
-        "Handler has been called after source has been re-set."
-    );
-    assert.equal(evaluation, 1,
-        "The constraint has not been re-evaluated without beeing asked."
-    );
-    a.set(4);
-    assert.equal(handlerCall, 2,
-        "Handler has been called when source has been re-set (even if it was not fetch since last call)."
-    );
-    b.get();
-    assert.equal(evaluation, 2,
-        "The constraint has been re-evaluated."
-    );
-    a.set(-4);
-    assert.equal(handlerCall, 3,
-        "Handler has been called even if its value has not actually changed."
-    );
-    assert.equal(evaluation, 2,
-        "The constraint has not been re-evaluated without beeing asked."
-    );
-    b.offUnsettled(handler);
-    b.get();
-    a.set(8);
-    assert.equal(handlerCall, 3,
-        "Handler has not been called as it has been removed from the listeners."
-    );
-    assert.end();
-});
-
-test("On unsettled with check=true", (assert) => {
+test("On change", (assert) => {
     let handlerCall = 0;
     let evaluation = 0;
     const a = tie(0);
@@ -63,7 +13,7 @@ test("On unsettled with check=true", (assert) => {
         handlerCall++
         a.get();
     };
-    b.onUnsettled(handler, true);
+    b.onChange(handler, true);
     assert.equal(evaluation, 1,
         "Constraint has been evaluated as the handler has check=true."
     );
@@ -89,7 +39,7 @@ test("On unsettled with check=true", (assert) => {
     assert.equal(evaluation, 4,
         "The constraint has been automatically re-evaluated again."
     );
-    b.offUnsettled(handler);
+    b.offChange(handler);
     b.get();
     a.set(8);
     assert.equal(handlerCall, 2,
@@ -98,32 +48,28 @@ test("On unsettled with check=true", (assert) => {
     assert.end();
 });
 
-test("Multiple on unsettled handlers", (assert) => {
+test("Multiple on change handlers", (assert) => {
     let calls = [];
     const a = tie(0);
     const b = tie(() => a.get() * a.get());
     b._debug = true;
-    b.onUnsettled(() => {
-        calls.push('no check 1');
-        b.get();
-    });
-    b.onUnsettled(() => {
-        calls.push('check 1')
+    b.onChange(() => {
+        calls.push(1)
     }, true);
-    b.onUnsettled(() => {
-        calls.push('no check 2');
+    b.onChange(() => {
+        calls.push(2);
     });
-    b.onUnsettled(() => {
-        calls.push('check 2');
+    b.onChange(() => {
+        calls.push(3);
     }, true);
     a.set(2);
-    assert.deepEqual(calls, ['no check 1', 'check 1', 'no check 2', 'check 2'],
+    assert.deepEqual(calls, [1, 2, 3],
         "All handlers are called in the proper order following a constraint's value change."
     );
     calls = [];
     a.set(-2); // b = a*a so it did not actually change
-    assert.deepEqual(calls, ['no check 1', 'no check 2'],
-        "Handlers that does not check are still called following a \"false change alert\"."
+    assert.deepEqual(calls, [],
+        "No handler is called following when a constrait has been updated but did not changed."
     );
     assert.end();
 });
@@ -166,7 +112,7 @@ test("Liven", (assert) => {
     assert.end();
 });
 
-test("Losange with on unsettled handler", (assert) => {
+test("Losange with on change handler", (assert) => {
     const src = tie('');
     const len = tie(() => src.get().length);
     const o = tie(() => src.get().indexOf('o') >= 0);
@@ -174,15 +120,15 @@ test("Losange with on unsettled handler", (assert) => {
         () => 'value: ' + src.get() + ', length: ' + len.get() + ', contains o: ' + o.get()
     );
     let called = 0;
-    final.onUnsettled(() => {
+    final.onChange(() => {
         called++;
     });
     src.set('hello');
     assert.equal(called, 1,
-        "On unsettled handler has been called only once.");
+        "On change handler has been called only once.");
     src.set('bye');
     assert.equal(called, 2,
-        "On unsettled handler has been called only once (again).");
+        "On change handler has been called only once (again).");
     assert.end();
 });
 
@@ -211,7 +157,7 @@ test("Events are sent once all dependent constraints has been notified", (assert
     const src = tie(0);
     const dep = src.add(5);
     let handlerDepVal;
-    src.onUnsettled(() => {
+    src.onChange(() => {
         handlerDepVal = dep.get();
     });
     // update dep

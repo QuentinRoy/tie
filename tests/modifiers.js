@@ -45,7 +45,7 @@ test("IfElse", (assert) => {
         "It is updated when the \"result\" constraint on which it depends changes."
     );
     let called = false;
-    res.onUnsettled(() => {
+    res.onChange(() => {
         called = true;
     });
     b.set('b3');
