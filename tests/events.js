@@ -7,17 +7,17 @@ test("On change", (assert) => {
     const a = tie(0);
     const b = tie(() => {
         evaluation++;
-        return a.get() * a.get()
+        return a.get() * a.get();
     });
     const handler = () => {
-        handlerCall++
+        handlerCall++;
         a.get();
     };
     b.onChange(handler, true);
     assert.equal(evaluation, 1,
         "Constraint has been evaluated as the handler has check=true."
     );
-    a.set(2)
+    a.set(2);
     assert.equal(handlerCall, 1,
         "Handler has been called after source has been re-set."
     );
@@ -26,7 +26,8 @@ test("On change", (assert) => {
     );
     a.set(4);
     assert.equal(handlerCall, 2,
-        "Handler has been called when source has been re-set again (even if the contraint has not been explecitly fetched)."
+        "Handler has been called when source has been re-set again (even if the contraint has not" +
+        " been explicitly fetched)."
     );
     b.get();
     assert.equal(evaluation, 3,
@@ -54,7 +55,7 @@ test("Multiple on change handlers", (assert) => {
     const b = tie(() => a.get() * a.get());
     b._debug = true;
     b.onChange(() => {
-        calls.push(1)
+        calls.push(1);
     }, true);
     b.onChange(() => {
         calls.push(2);

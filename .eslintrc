@@ -2,7 +2,8 @@
     "extends": "eslint:recommended",
     "rules": {
     	"no-underscore-dangle": 0,
-        "semi": [2, "always"]
+        "semi": [2, "always"],
+        "max-len": [2, 100, 4]
     },
     "env": {
         "browser": 1,

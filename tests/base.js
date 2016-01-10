@@ -56,8 +56,7 @@ test("Evaluations and dependency updates", (assert) => {
     const cond = tie(() => {
         condUpdates++;
         if(det.get()){
-            // Call it itentionally twice to make sure
-            // the dep is added only once
+            // Call it itentionally twice to make sure the dep is added only once.
             return x.get() + x.get();
         } else {
             return '';
@@ -190,9 +189,9 @@ test("Cycles", (assert) => {
     assert.equal(y.get(), 4,
         "Self referring constraint return the cached value when recursively called."
     );
-    // This part is still under reflection.
-    // One other approach may be to allow self-invalidating evaluation (i.e. y below will always being invalid).
-    // However, such constraint will create an infinite loop if a liven makes use of it.
+    // This part is still under reflection. One other approach may be to allow self-invalidating
+    // evaluation (i.e. y below will always being invalid). However, such constraint will create
+    //  an infinite loop if a liven makes use of it.
     assert.equal(y.get(), 4,
         "Self referring constraint are validated and (so are not re-evaluated at each call)."
     );

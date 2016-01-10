@@ -40,7 +40,7 @@ test("IfElse", (assert) => {
     assert.equal(res.get(), 'a',
         "It is updated when the conditional constraint changes."
     );
-    a.set('a2')
+    a.set('a2');
     assert.equal(res.get(), 'a2',
         "It is updated when the \"result\" constraint on which it depends changes."
     );
@@ -160,7 +160,7 @@ test("Other operators that can be applied multiple times.", (assert) => {
 
     const add = a.add(b, c, 1);
     assert.equal(add.get(), 8 + 13 + 0.5 + 1, "Add gets the correct value..." );
-    a.set(5); b.set(10)
+    a.set(5); b.set(10);
     assert.equal(add.get(), 5 + 10 + 0.5 + 1, "...And is properly updated." );
 
     const sub = a.sub(b, c, -5);
@@ -197,7 +197,7 @@ test("Math", (assert) => {
     x.set(5);
     assert.equal(acoshx.get(), Math.acosh(5),
         "acosh(constraint) has the expected value."
-    )
+    );
     assert.end();
 });
 
