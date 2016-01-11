@@ -69,8 +69,8 @@ window.addEventListener("load", function(){
     var eyeRadius = eyeSliderVal.parseFloat();
     var pupilRadius = pupilSliderVal.parseFloat();
 
-    createEyeEye(document.querySelector("#eyes"),
+    createEye(document.querySelector("#eyes"),
                  eyeRadius, pupilRadius, mousePosition, "lightgray");
-    createEyeEye(document.querySelector("#eyes"),
+    createEye(document.querySelector("#eyes"),
                  eyeRadius.mul(0.7), pupilRadius.mul(0.8), mousePosition, "lightgray");
 });
