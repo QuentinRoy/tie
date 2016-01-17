@@ -1,7 +1,7 @@
 {
   "name": "tie",
   "version": "0.3.0",
-  "description": "",
+  "description": "A tiny constraint library.",
   "main": "dist/tie.js",
   "scripts": {
     "test": "babel-node tests | ./node_modules/.bin/tap-spec",
