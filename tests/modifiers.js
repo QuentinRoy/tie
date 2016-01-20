@@ -111,6 +111,59 @@ test("Parse Numbers", (assert) => {
     assert.end();
 });
 
+test("Type conversion", (assert) => {
+    const base = tie(0);
+    const bool = base.toBoolean();
+    const string = base.toStringConstraint();
+    const num = base.toNumber();
+
+    assert.equal(bool.get(), false,
+        "toBoolean is working for falsy value");
+    base.set("0");
+    assert.equal(bool.get(), true,
+        "toBoolean is working for truthy value");
+
+
+    base.set({ toString: function(){ return "toString test"; }});
+    assert.equal(string.get(), "toString test",
+        "toStringConstraint is working.");
+
+    base.set(true);
+    assert.equal(num.get(), 1,
+        "toNumber is working.");
+
+    assert.end();
+});
+
+test("Other global JS functions", (assert) => {
+    const c = tie(7);
+    const isNaN = c.isNaN();
+    assert.notOk(isNaN.get(),
+        "isNaN is false for number.");
+    c.set(NaN);
+    assert.ok(isNaN.get(),
+        "isNaN is true for NaN.");
+    c.set("4.9");
+    assert.notOk(isNaN.get(),
+        "isNaN is false for string number.");
+    c.set("foo");
+    assert.ok(isNaN.get(),
+        "isNaN is true for non number strings.");
+
+    c.set(8/0);
+    const finite = c.isFinite();
+    assert.notOk(finite.get(),
+        "isFinite is false for +Infinite number.");
+    c.set(8);
+    assert.ok(finite.get(),
+        "isFinite is true for small number.");
+    c.set(-2/0);
+    assert.notOk(finite.get(),
+        "isFinite is false for -Infinite number.");
+
+    assert.end();
+});
+
 test("Prop", (assert) => {
     const a = tie({
         p1: 'p1-val',
