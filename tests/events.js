@@ -75,7 +75,7 @@ test("Multiple on change handlers", (assert) => {
     assert.end();
 });
 
-test("Liven", (assert) => {
+test("Activity", (assert) => {
     const a = tie('a');
     const b = tie('c');
     const l = tie(() => b.get().length);
@@ -86,28 +86,29 @@ test("Liven", (assert) => {
         called++;
     });
     assert.equal(called, 1,
-        "Liven is called when created."
+        "Activities are called when created."
     );
     a.set('d');
     assert.equal(called, 2,
-        "Liven is called when one of its dependency changes."
+        "Activities are called when one of its dependency changes."
     );
     b.set('u');
     assert.equal(called, 2,
-        "Liven is not called when one of its dependency is re-evaluated but did not change."
+        "Activities are not called when one of their dependencies is re-evaluated but did not " +
+        "change."
     );
     liven.call();
     assert.equal(called, 3,
-        "Liven can be manually called."
+        "Activities can be manually called."
     );
     liven.stop();
     a.set('u');
     assert.equal(called, 3,
-        "Liven can be stopped and are not called anymore on change."
+        "Activites can be stopped and are not called anymore on change."
     );
     liven.resume();
     assert.equal(called, 4,
-        "Liven can be resumed and will be automatically called then."
+        "Activities can be resumed and will be automatically called then."
     );
 
     assert.end();
@@ -133,7 +134,7 @@ test("Losange with on change handler", (assert) => {
     assert.end();
 });
 
-test("Losange with liven", (assert) => {
+test("Losange with activities", (assert) => {
     const src = tie('');
     const len = tie(() => src.get().length);
     const o = tie(() => src.get().indexOf('o') >= 0);
