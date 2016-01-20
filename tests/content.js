@@ -3,7 +3,7 @@ import tie from "../lib";
 
 
 test("Module content", (assert) => {
-    const expectedContent = ["Constraint", "Liven", "liven", "bindStyle", "bindClass",
+    const expectedContent = ["Constraint", "Activity", "liven", "bindStyle", "bindClass",
                              "hypot", "max", "min", "sum", "product", "atan2"];
     const content = Object.keys(tie);
     expectedContent.forEach((k) => {
