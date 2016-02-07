@@ -13,11 +13,11 @@ function createEye(mainDiv, eyeRadius, pupilRadius, focusPosition, bigPupilColor
     pupilRadius = tie.min(pupilRadius, eyeRadius);
 
     // calculate pupil position
-    var dx = eyeRadius.add(eyeBorderWidth).sub(focusPosition.prop("x")).alter(function(x){
-        return x + eyeDiv.offsetLeft;
+    var dx = eyeRadius.add(eyeBorderWidth).sub(focusPosition.prop("x")).alter(function(dx){
+        return dx + eyeDiv.offsetLeft;
     });
-    var dy = eyeRadius.add(eyeBorderWidth).sub(focusPosition.prop("y")).alter(function(y){
-        return y + eyeDiv.offsetTop;
+    var dy = eyeRadius.add(eyeBorderWidth).sub(focusPosition.prop("y")).alter(function(dy){
+        return dy + eyeDiv.offsetTop;
     });
     var d  = tie.min(
         eyeRadius.sub(pupilRadius),
