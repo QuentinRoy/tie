@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "description": "A tiny constraint library.",
   "main": "dist/tie.js",
+  "jsnext:main": "lib/index.js",
   "scripts": {
     "test": "babel-node tests | ./node_modules/.bin/tap-spec",
     "browser-test": "./node_modules/.bin/karma start karma.conf.js",
