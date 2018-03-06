@@ -4,10 +4,11 @@ var webpack = require('webpack');
 var path = require('path');
 
 var webpackConf = {
+    mode: 'development',
     module: {
-        loaders: [{
+        rules: [{
             test: /\.js$/,
-            loader: 'babel',
+            loader: 'babel-loader',
             include: [
                 path.join(__dirname, 'lib'),
                 path.join(__dirname, 'tests')
@@ -15,13 +16,12 @@ var webpackConf = {
         }]
     },
     devtool: "inline-source-map",
-    webpackServer: { noInfo: true },
+    devServer: { noInfo: true },
     node: { fs: 'empty' },
     plugins: [
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin()
+        new webpack.HotModuleReplacementPlugin()
     ]
-}
+};
 
 
 module.exports = function(config) {
@@ -96,5 +96,5 @@ module.exports = function(config) {
     concurrency: Infinity,
 
     webpack: webpackConf
-  })
-}
+  });
+};
