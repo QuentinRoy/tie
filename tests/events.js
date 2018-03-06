@@ -134,7 +134,7 @@ test("Losange with on change handler", (assert) => {
     assert.end();
 });
 
-test("Losange with activities", (assert) => {
+test("Diamond with activities", (assert) => {
     const src = tie('');
     const len = tie(() => src.get().length);
     const o = tie(() => src.get().indexOf('o') >= 0);
