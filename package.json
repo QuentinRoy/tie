@@ -5,7 +5,7 @@
   "main": "dist/tie.js",
   "module": "lib/index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test babel-node tests | ./node_modules/.bin/tap-spec",
+    "test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text babel-node tests | ./node_modules/.bin/tap-spec",
     "browser-test": "cross-env NODE_ENV=test ./node_modules/.bin/karma start karma.conf.js",
     "build-dev": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --config webpack.development.js",
     "build-prod": "cross-env NODE_ENV=production ./node_modules/.bin/webpack --config webpack.production.js",
@@ -38,6 +38,7 @@
     "karma-sourcemap-loader": "^0.3.6",
     "karma-tap": "^4.1.3",
     "karma-webpack": "^2.0.13",
+    "nyc": "^11.4.1",
     "tap-spec": "^4.1.1",
     "tape": "^4.2.2",
     "webpack": "^4.1.0",
@@ -45,6 +46,15 @@
     "webpack-merge": "^4.1.2"
   },
   "dependencies": {
+    "babel-plugin-istanbul": "^4.1.5",
     "babel-preset-env": "^1.6.1"
+  },
+  "nyc": {
+    "require": [
+      "babel-register"
+    ],
+    "include": ["lib/**/*.js"],
+    "sourceMap": false,
+    "instrument": false
   }
 }

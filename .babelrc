@@ -2,7 +2,8 @@
   "presets": [["env", { "modules": false }]],
   "env": {
     "test": {
-      "presets": ["env"]
+      "presets": ["env"],
+      "plugins": ["istanbul"]
     }
   }
 }
