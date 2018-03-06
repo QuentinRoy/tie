@@ -9,7 +9,11 @@
     "browser-test": "cross-env NODE_ENV=test ./node_modules/.bin/karma start karma.conf.js",
     "build-dev": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --config webpack.development.js",
     "build-prod": "cross-env NODE_ENV=production ./node_modules/.bin/webpack --config webpack.production.js",
-    "build": "yarn build-dev && yarn build-prod"
+    "build": "yarn build-dev && yarn build-prod",
+    "release": "standard-version",
+    "git-hook": "yarn test",
+    "precommit": "yarn git-hook",
+    "commitmsg": "commitlint -e $GIT_PARAMS"
   },
   "keywords": [
     "constraint",
@@ -26,6 +30,8 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@commitlint/cli": "^6.1.3",
+    "@commitlint/config-conventional": "^6.1.3",
     "babel-cli": "^6.6.5",
     "babel-core": "^6.4.5",
     "babel-eslint": "^8.2.2",
@@ -36,11 +42,13 @@
     "deep-equal": "^1.0.1",
     "eslint": "^4.18.2",
     "events": "^2.0.0",
+    "husky": "^0.14.3",
     "karma": "^2.0.0",
     "karma-sourcemap-loader": "^0.3.6",
     "karma-tap": "^4.1.3",
     "karma-webpack": "^2.0.13",
     "nyc": "^11.4.1",
+    "standard-version": "^4.3.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.2.2",
     "webpack": "^4.1.0",
@@ -52,7 +60,9 @@
     "require": [
       "babel-register"
     ],
-    "include": ["lib/**/*.js"],
+    "include": [
+      "lib/**/*.js"
+    ],
     "sourceMap": false,
     "instrument": false
   }
