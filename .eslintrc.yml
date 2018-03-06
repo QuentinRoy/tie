@@ -1,0 +1,22 @@
+root: true
+env:
+  browser: true
+extends:
+  - airbnb-base
+  - prettier
+rules:
+  no-underscore-dangle: 0
+  valid-jsdoc: error
+  prettier/prettier: error
+plugins:
+  - prettier
+overrides:
+  - files:
+      - tests/**/*.js
+      - webpack.*.js
+    rules:
+      import/no-extraneous-dependencies:
+      - error
+      - devDependencies: true
+    env:
+        node: true
