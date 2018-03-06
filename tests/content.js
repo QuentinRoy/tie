@@ -8,11 +8,11 @@ test("Module content", (assert) => {
     const content = Object.keys(tie);
     expectedContent.forEach((k) => {
         assert.notOk(content.indexOf(k) < 0,
-            `${k} is integrated.`
+            `${k} is included.`
         );
     });
     content.filter(k => expectedContent.indexOf(k) < 0).forEach((k) => {
-        assert.fail(`${k} is not supposed to be integrated.`);
+        assert.fail(`${k} is not supposed to be included.`);
     });
     assert.end();
 });
