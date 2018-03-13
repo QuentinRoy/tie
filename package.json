@@ -52,7 +52,7 @@
     "karma-sourcemap-loader": "0.3.7",
     "karma-tap": "4.1.3",
     "karma-webpack": "2.0.13",
-    "nyc": "11.4.1",
+    "nyc": "11.6.0",
     "prettier": "1.11.1",
     "standard-version": "4.3.0",
     "tap-spec": "4.1.1",
