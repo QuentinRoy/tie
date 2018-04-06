@@ -1,8 +1,30 @@
 {
-    "extends": ["config:js-lib"],
-    "automerge": true,
-    "major": {
-        "automerge": false
+  "extends": [
+    "schedule:weekends",
+    "config:js-lib",
+    ":automergeMinor",
+    ":automergeBranchPush",
+    ":semanticCommits",
+    ":rebaseStalePrs",
+    ":semanticCommitScopeDisabled"
+  ],
+  "packageRules": [
+    {
+      "packagePatterns": ["eslint"],
+      "groupName": "eslint"
     },
-    "automergeType": "branch-push"
+    {
+      "packagePatterns": ["karma", "tape", "nyc"],
+      "packageNames": ["tap-spec"],
+      "groupName": "test"
+    },
+    {
+      "packagePatterns": ["webpack"],
+      "groupName": "webpack"
+    },
+    {
+      "packagePatterns": ["babel"],
+      "groupName": "babel"
+    }
+  ]
 }
