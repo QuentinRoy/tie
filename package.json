@@ -49,7 +49,7 @@
     "events": "2.1.0",
     "husky": "0.14.3",
     "nyc": "11.8.0",
-    "prettier": "1.13.0",
+    "prettier": "1.13.4",
     "standard-version": "4.4.0",
     "tap-spec": "4.1.1",
     "tape": "4.9.0",
