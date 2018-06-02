@@ -46,7 +46,7 @@
     "eslint-config-prettier": "2.9.0",
     "eslint-plugin-import": "2.12.0",
     "eslint-plugin-prettier": "2.6.0",
-    "events": "2.1.0",
+    "events": "3.0.0",
     "husky": "0.14.3",
     "nyc": "12.0.1",
     "prettier": "1.13.4",
