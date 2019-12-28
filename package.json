@@ -52,7 +52,7 @@
     "prettier": "1.19.1",
     "standard-version": "4.4.0",
     "tap-spec": "5.0.0",
-    "tape": "4.12.0",
+    "tape": "4.12.1",
     "uglifyjs-webpack-plugin": "1.3.0",
     "webpack": "4.41.4",
     "webpack-cli": "3.3.10",
